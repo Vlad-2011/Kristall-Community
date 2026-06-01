@@ -1,0 +1,446 @@
+/* Базовые сбросы */
+body {
+    background-color: #0b0f19;
+    color: #e5e7eb;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Шапка сайта */
+header {
+    background-color: #111827;
+    border-bottom: 1px solid #1f2937;
+    padding: 15px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+.header-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #22d3ee;
+    text-decoration: none;
+    text-shadow: 0 0 10px rgba(34, 211, 238, 0.2);
+}
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 25px;
+    margin: 0;
+    padding: 0;
+}
+nav a {
+    color: #9ca3af;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 15px;
+    transition: color 0.3s;
+}
+nav a:hover, nav a.active {
+    color: #10b981;
+}
+
+/* Кнопка бургера (скрыта на ПК) */
+.burger-menu {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 24px;
+    height: 18px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 110;
+}
+.burger-menu span {
+    width: 100%;
+    height: 2px;
+    background-color: white;
+    transition: all 0.3s ease;
+}
+
+/* Заготовка под аватар профиля в мобильном меню */
+.menu-profile {
+    display: none;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #1f2937;
+    margin-bottom: 25px;
+}
+.menu-avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: 2px solid #22d3ee;
+    object-fit: cover;
+}
+.menu-username {
+    font-weight: bold;
+    color: white;
+    font-size: 16px;
+}
+
+/* =======================================================
+   АДАПТИВНОСТЬ ДЛЯ СМАРТФОНОВ (Экраны меньше 768px)
+   ======================================================= */
+@media (max-width: 768px) {
+    .burger-menu {
+        display: flex; /* Показываем 3 полоски на смартфонах */
+    }
+
+    /* Превращаем навигацию в скрытую шторку справа */
+    nav {
+        position: fixed;
+        top: 0;
+        right: -100%; /* Полностью прячем за правый край экрана */
+        width: 260px;
+        height: 100%;
+        background-color: #111827;
+        border-left: 1px solid #1f2937;
+        box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+        padding: 80px 24px 24px 24px;
+        box-sizing: border-box;
+        transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Плавное выезжание */
+        z-index: 105;
+    }
+
+    /* Класс, который JS добавит при клике на бургер */
+    nav.open {
+        right: 0; /* Меню выезжает на экран */
+    }
+
+    nav ul {
+        flex-direction: column; /* Ссылки встают друг под друга */
+        gap: 20px;
+    }
+
+    nav a {
+        font-size: 18px; /* Увеличиваем ссылки, чтобы по ним было легко тапать пальцем */
+        display: block;
+    }
+
+    .menu-profile {
+        display: flex; /* Показываем аватарку только внутри шторки на мобилках */
+    }
+
+    /* Анимация бургера: превращаем 3 полоски в красивый крестик X */
+    .burger-menu.open span:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 6px);
+    }
+    .burger-menu.open span:nth-child(2) {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+    .burger-menu.open span:nth-child(3) {
+        transform: rotate(-45deg) translate(5px, -6px);
+    }
+}
+
+/* Баннер приветствия */
+.hero {
+    text-align: center;
+    padding: 50px 0;
+    background: linear-gradient(180deg, #111827 0%, #0b0f19 100%);
+}
+.hero h1 {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+.hero h1 span { color: #22d3ee; }
+.hero p {
+    color: #9ca3af;
+    max-width: 600px;
+    margin: 0 auto;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+/* Двухколоночный макет (Игры слева, Новости справа) */
+.main-layout {
+    display: flex;
+    gap: 40px;
+    margin-top: 30px;
+    margin-bottom: 60px;
+}
+.projects-section { flex: 2; }
+.news-section { flex: 1; min-width: 300px; }
+
+.section-title {
+    font-size: 22px;
+    color: white;
+    border-left: 4px solid #22d3ee;
+    padding-left: 12px;
+    margin-bottom: 25px;
+}
+
+/* Мощные карточки игр */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+.game-card {
+    background-color: #1f2937;
+    border: 1px solid #374151;
+    border-radius: 10px;
+    padding: 20px;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.3s ease;
+}
+.game-card:hover {
+    transform: translateY(-4px);
+    border-color: #10b981;
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.15);
+}
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.card-header h3 { margin: 0; color: white; font-size: 18px; }
+.badge {
+    background-color: #10b981;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 5px;
+    font-size: 11px;
+    font-weight: bold;
+}
+.card-desc { color: #9ca3af; font-size: 14px; line-height: 1.5; margin: 15px 0; }
+.card-footer { color: #22d3ee; font-size: 13px; text-align: right; font-weight: 500; }
+
+/* Дизайн блока новостей */
+.news-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.news-item {
+    background-color: #111827;
+    border: 1px solid #1f2937;
+    border-radius: 8px;
+    padding: 15px;
+    animation: slideIn 0.3s ease;
+}
+.news-date { font-size: 11px; color: #10b981; font-weight: bold; }
+.news-title { font-size: 15px; color: white; margin: 5px 0; font-weight: 600; }
+.news-text { font-size: 13px; color: #9ca3af; margin: 0; line-height: 1.4; }
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Подвал */
+footer {
+    background-color: #070a12;
+    border-top: 1px solid #1f2937;
+    padding: 20px 0;
+    text-align: center;
+    color: #4b5563;
+    font-size: 13px;
+}
+
+/* Адаптивность для телефонов */
+@media (max-width: 768px) {
+    .main-layout { flex-direction: column; }
+    .hero h1 { font-size: 30px; }
+}
+
+/* Кнопка бургера */
+.burger-menu {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 24px;
+    height: 18px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 100;
+}
+.burger-menu span {
+    width: 100%;
+    height: 2px;
+    background-color: white;
+    transition: all 0.3s ease;
+}
+
+/* Блок профиля в меню (скрыт на ПК) */
+.menu-profile {
+    display: none;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #1f2937;
+    margin-bottom: 20px;
+}
+.menu-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid #22d3ee;
+    object-fit: cover;
+}
+.menu-username {
+    font-weight: bold;
+    color: white;
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 768px) {
+    .burger-menu {
+        display: flex; /* Показываем полоски на телефонах */
+    }
+
+    nav {
+        position: fixed;
+        top: 0;
+        right: -100%; /* Прячем меню за правый экран */
+        width: 250px;
+        height: 100%;
+        background-color: #111827;
+        box-shadow: -5px 0 15px rgba(0,0,0,0.5);
+        padding: 80px 20px 20px 20px;
+        box-sizing: border-box;
+        transition: right 0.3s ease;
+        z-index: 99;
+    }
+
+    nav.open {
+        right: 0; /* Выезжает при добавлении класса .open */
+    }
+
+    nav ul {
+        flex-direction: column; /* Ссылки встают в столбик */
+        gap: 20px;
+    }
+
+    .menu-profile {
+        display: flex; /* Показываем аватарку в меню на мобилках */
+    }
+}
+/* Стили для строки поиска при фокусе */
+#search-input:focus {
+    border-color: #22d3ee !important;
+    box-shadow: 0 0 10px rgba(34, 211, 238, 0.2);
+}
+
+/* Красивые неоновые кнопки фильтров */
+.filter-btn {
+    background-color: #111827;
+    border: 1px solid #374151;
+    color: #9ca3af;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.filter-btn:hover {
+    color: white;
+    border-color: #9ca3af;
+}
+.filter-btn.active {
+    background-color: #1f2937;
+    color: #22d3ee;
+    border-color: #22d3ee;
+    box-shadow: 0 0 12px rgba(34, 211, 238, 0.15);
+}
+
+/* СТИЛИ ДЛЯ КНОПОК СОЦ. СЕТЕЙ В ПОДВАЛЕ */
+footer {
+    background-color: #070a12;
+    border-top: 1px solid #1f2937;
+    padding: 30px 0;
+}
+
+.social-links {
+    width: 100%;
+    max-width: 800px;
+}
+
+.social-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    color: #9ca3af;
+    border: 1px solid #1f2937;
+    background-color: #111827;
+    transition: all 0.3s ease;
+}
+
+.social-btn svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+    transition: transform 0.3s ease;
+}
+
+.social-btn:hover svg {
+    transform: scale(1.1);
+}
+
+/* Эффекты наведения */
+.social-btn.tg-btn:hover {
+    color: #fff;
+    border-color: #38bdf8;
+    background-color: #0284c7;
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+}
+
+/* Тёмно-синий неоновый цвет для RuTube */
+.social-btn.rt-btn:hover {
+    color: #fff;
+    border-color: #2563eb;
+    background-color: #1d4ed8;
+    box-shadow: 0 0 15px rgba(37, 99, 235, 0.5);
+}
+
+.social-btn.yt-btn:hover {
+    color: #fff;
+    border-color: #f87171;
+    background-color: #dc2626;
+    box-shadow: 0 0 15px rgba(248, 113, 113, 0.4);
+}
+
+/* ДОБАВЛЕНО: Фирменный геймерский цвет Blurple для Discord */
+.social-btn.dc-btn:hover {
+    color: #fff;
+    border-color: #818cf8;
+    background-color: #5865f2;
+    box-shadow: 0 0 15px rgba(88, 101, 242, 0.5);
+}
+
+@media (max-width: 480px) {
+    .social-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+

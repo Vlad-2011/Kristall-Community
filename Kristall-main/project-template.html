@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Загрузка приложения - KristallCommunity</title>
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .content { max-width: 600px; margin: 50px auto; background-color: #1f2937; padding: 40px; border-radius: 12px; border: 1px solid #374151; }
+        .btn-download { display: inline-block; background-color: #10b981; color: white; padding: 15px 30px; font-size: 18px; font-weight: bold; text-decoration: none; border-radius: 6px; margin-top: 25px; transition: 0.2s; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2); }
+        .btn-download:hover { background-color: #059669; transform: translateY(-2px); }
+        .back-link { display: block; margin-top: 30px; color: #9ca3af; text-decoration: none; font-size: 14px; }
+        .back-link:hover { color: #10b981; }
+    </style>
+</head>
+<body>
+
+    <!-- НАВИГАЦИЯ (HEADER) -->
+    <header>
+        <div class="container header-wrapper">
+            <!-- Ссылка на логотип теперь ведет на главную -->
+            <a href="main.html" class="logo">KristallCommunity</a>
+
+            <!-- Кнопка Бургера (3 полоски, видны только на мобилках) -->
+            <button class="burger-menu" id="burger-btn" aria-label="Открыть меню">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <!-- Меню сайта (на ПК — строка, на мобилках — выезжающая панель) -->
+            <nav id="nav-menu">
+                <!-- Блок будущего профиля (виден только на мобилках внутри меню) -->
+                <div class="menu-profile">
+                    <img src="https://flaticon.com" alt="User Avatar" class="menu-avatar">
+                    <span class="menu-username">Гость</span>
+                </div>
+                <ul>
+                    <li><a href="main.html">Главная</a></li>
+                    <li><a href="projects.html">Проекты</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+
+    <!-- ДИНАМИЧЕСКИЙ ШАБЛОН ИГРЫ -->
+        <div class="container">
+        <div class="content">
+            <h1 id="game-title" style="color: white; margin-top: 0; font-size: 32px;">Загрузка...</h1>
+            <p id="game-short-desc" style="color: #9ca3af; line-height: 1.6; font-size: 16px;"></p>
+
+            <a href="#" id="game-download-btn" download class="btn-download">Скачать APK</a>
+
+            <div style="text-align: left; margin-top: 40px; border-top: 1px solid #374151; padding-top: 25px;">
+                <h3 style="color: #22d3ee; margin-bottom: 15px;">О проекте</h3>
+                <p id="game-full-desc" style="color: #d1d5db; line-height: 1.6; font-size: 14px;"></p>
+
+                <h3 style="color: #22d3ee; margin-top: 25px; margin-bottom: 15px;">Ключевые особенности:</h3>
+                <ul id="game-features" style="color: #d1d5db; line-height: 1.8; font-size: 14px; padding-left: 20px; list-style: none;"></ul>
+
+                <!-- ДИНАМИЧЕСКИЙ БЛОК ИНСТРУКЦИИ (Управляется через JS) -->
+                <div id="instruction-block" style="display: none; margin-top: 25px;">
+                    <h3 style="color: #22d3ee; margin-bottom: 15px;">Как установить?</h3>
+                    <ol id="instruction-list" style="color: #9ca3af; line-height: 1.6; font-size: 13px; padding-left: 20px;"></ol>
+                </div>
+
+                <!-- ТЕХНИЧЕСКИЕ ХАРАКТЕРИСТИКИ -->
+                <table style="width: 100%; margin-top: 30px; border-collapse: collapse; font-size: 13px; color: #9ca3af;">
+                    <tr style="border-bottom: 1px solid #374151;">
+                        <td style="padding: 8px 0; font-weight: bold; color: #d1d5db;">Платформа:</td>
+                        <td id="game-platform" style="padding: 8px 0; text-align: right;">-</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #374151;">
+                        <td style="padding: 8px 0; font-weight: bold; color: #d1d5db;">Текущая версия:</td>
+                        <td id="game-version" style="padding: 8px 0; text-align: right;">-</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 0; font-weight: bold; color: #d1d5db;">Разработчик:</td>
+                        <!-- ИСПРАВЛЕНО: Сюда встанет имя автора из JSON -->
+                        <td id="game-developer" style="padding: 8px 0; text-align: right; color: #22d3ee; font-weight: 500;">-</td>
+                    </tr>
+                </table>
+            </div>
+
+            <a href="projects.html" class="back-link">← Вернуться в каталог</a>
+        </div>
+    </div>
+
+
+    <!-- Подключаем скрипт-генератор -->
+    <script src="script.js"></script>
+</body>
+</html>
