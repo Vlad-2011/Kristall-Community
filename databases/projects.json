@@ -18,6 +18,13 @@
     ],
     "requirements": "Android 7.0 и выше",
     "show_instruction": true,
-    "instruction_type": "android"
+    "instruction_type": "android",
+    "screenshots": [
+      "https://github.com/KristallC/GameScreenshots/blob/main/MoneyEmpire/Screenshot_2026-06-03-14-49-31-426_com.kristall.moneyempire-edit.jpg?raw=true",
+      "https://github.com/KristallC/GameScreenshots/blob/main/MoneyEmpire/Screenshot_2026-06-03-14-49-52-097_com.kristall.moneyempire.jpg?raw=true",
+      "https://github.com/KristallC/GameScreenshots/blob/main/MoneyEmpire/Screenshot_2026-06-03-14-50-02-976_com.kristall.moneyempire.jpg?raw=true",
+      "https://github.com/KristallC/GameScreenshots/blob/main/MoneyEmpire/IMG_20260603_145123_148.jpg?raw=true",
+      "https://github.com/KristallC/GameScreenshots/blob/main/MoneyEmpire/IMG_20260603_145217.jpg?raw=true"
+    ]
   }
 ]
