@@ -443,4 +443,114 @@ footer {
     }
 }
 
+/* КРАСИВОЕ МОДАЛЬНОЕ ОКНО КРИСТАЛЛ ID */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(11, 15, 25, 0.8);
+    backdrop-filter: blur(8px); /* Крутое размытие заднего плана */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 200;
+}
+.modal-content {
+    background-color: #111827;
+    border: 1px solid #374151;
+    border-radius: 12px;
+    padding: 30px;
+    width: 100%;
+    max-width: 400px;
+    position: relative;
+    box-shadow: 0 0 25px rgba(34, 211, 238, 0.15);
+    box-sizing: border-box;
+}
+.modal-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: transparent;
+    border: none;
+    color: #9ca3af;
+    font-size: 24px;
+    cursor: pointer;
+}
+.modal-close:hover { color: #ef4444; }
 
+/* Переключатели Вход / Регистрация */
+.modal-tabs {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+    border-bottom: 1px solid #1f2937;
+    padding-bottom: 10px;
+}
+.tab-btn {
+    background: transparent;
+    border: none;
+    color: #9ca3af;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 5px 10px;
+    transition: all 0.3s ease;
+}
+.tab-btn.active {
+    color: #22d3ee;
+    border-bottom: 2px solid #22d3ee;
+}
+
+/* Настройки полей ввода */
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.auth-form input {
+    padding: 12px;
+    background-color: #1f2937;
+    border: 1px solid #374151;
+    color: white;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+.auth-form input:focus {
+    border-color: #22d3ee;
+    box-shadow: 0 0 10px rgba(34, 211, 238, 0.2);
+}
+.auth-submit-btn {
+    background-color: #10b981;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.auth-submit-btn:hover {
+    background-color: #059669;
+    box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
+}
+
+/* Адаптивное управление отображением профилей */
+@media (min-width: 769px) {
+    .mobile-profile-block {
+        display: none !important; /* На ПК мобильный блок намертво скрыт */
+    }
+}
+
+@media (max-width: 768px) {
+    .pc-profile-block {
+        display: none !important; /* На смартфонах ПК-блок полностью исчезает */
+    }
+    .mobile-profile-block {
+        display: flex !important; /* Внутри шторки на телефонах блок плавно появляется */
+    }
+}
