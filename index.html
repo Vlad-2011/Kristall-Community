@@ -11,35 +11,45 @@
 </head>
 <body>
 
-    <!-- НАВИГАЦИЯ (HEADER) -->
+    <!-- НАВИГАЦИЯ (HEADER) — ИСПРАВЛЕННЫЙ ИДЕАЛЬНЫЙ ВАРИАНТ -->
     <header>
-        <div class="container header-wrapper">
-            <!-- Ссылка на логотип теперь ведет на главную -->
-            <a href="main.html" class="logo">KristallCommunity</a>
+        <div class="container header-wrapper" style="display: flex; justify-content: space-between; align-items: center; position: relative;">
+            
+            <!-- Левая часть: Логотип -->
+            <a href="index.html" class="logo">KristallCommunity</a>
+            
+            <!-- Правая часть: Меню и Аватарки -->
+            <div style="display: flex; align-items: center; gap: 20px;">
+                
+                <!-- Меню навигации -->
+                <nav id="nav-menu">
+                    <!-- Профиль для ТЕЛЕФОНОВ (виден только внутри шторки бургера) -->
+                    <div class="menu-profile mobile-profile-block" style="display: none; align-items: center; gap: 10px; padding-bottom: 20px; border-bottom: 1px solid #1f2937; margin-bottom: 20px; cursor: pointer;">
+                        <span id="header-avatar-img-mobile"></span>
+                        <span class="menu-username" id="header-username-mobile">Гость</span>
+                    </div>
+                    <ul>
+                        <li><a href="index.html" class="active">Главная</a></li>
+                        <li><a href="projects.html">Проекты</a></li>
+                        <li><a href="marketplace.html">Магазин</a></li>
+                    </ul>
+                </nav>
 
-            <!-- Кнопка Бургера (3 полоски, видны только на мобилках) -->
-            <button class="burger-menu" id="burger-btn" aria-label="Открыть меню">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-
-            <!-- Меню сайта (на ПК — строка, на мобилках — выезжающая панель) -->
-            <nav id="nav-menu">
-                <!-- Блок будущего профиля (виден только на мобилках внутри меню) -->
-                <div class="menu-profile">
-                    <img src="https://flaticon.com" alt="User Avatar" class="menu-avatar">
-                    <span class="menu-username">Гость</span>
+                <!-- ПРОФИЛЬ ДЛЯ ПК (Красиво стоит справа от меню на больших экранах) -->
+                <div class="pc-profile-block" id="user-profile-block" style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                    <span id="header-avatar-img-pc"></span>
+                    <span class="menu-username" id="header-username" style="color: white; font-weight: bold; font-size: 14px;">Гость</span>
                 </div>
-                <ul>
-                    <li><a href="main.html">Главная</a></li>
-                    <li><a href="projects.html">Проекты</a></li>
-                </ul>
-            </nav>
+
+                <!-- Кнопка Бургера (3 полоски для мобилок) -->
+                <button class="burger-menu" id="burger-btn" aria-label="Открыть меню">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
         </div>
     </header>
-
-
 
     <!-- ГЛАВНЫЙ БАННЕР -->
     <section class="hero">
@@ -116,6 +126,35 @@
             <p style="margin: 0; color: #4b5563; font-size: 13px; text-align: center;">&copy; 2026 KristallCommunity. Все права защищены.</p>
         </div>
     </footer>
+    
+    <!-- МОДАЛЬНОЕ ОКНО: АВТОРИЗАЦИЯ И РЕГИСТРАЦИЯ -->
+<div id="auth-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+        <!-- Кнопка закрытия окна -->
+        <button id="close-auth-btn" class="modal-close">&times;</button>
+        
+        <!-- ВКЛАДКИ: ВХОД / РЕГИСТРАЦИЯ -->
+        <div class="modal-tabs">
+            <button id="tab-login-btn" class="tab-btn active">Вход</button>
+            <button id="tab-register-btn" class="tab-btn">Регистрация</button>
+        </div>
+
+        <!-- ФОРМА ВХОДА -->
+        <form id="login-form" class="auth-form">
+            <input type="email" id="login-email" placeholder="Электронная почта" required>
+            <input type="password" id="login-password" placeholder="Пароль" required>
+            <button type="submit" class="auth-submit-btn">Войти в Kristall ID</button>
+        </form>
+
+        <!-- ФОРМА РЕГИСТРАЦИИ (Скрыта по умолчанию) -->
+        <form id="register-form" class="auth-form" style="display: none;">
+            <input type="text" id="register-username" placeholder="Имя аккаунта (до 30 симв.)" maxlength="30" required>
+            <input type="email" id="register-email" placeholder="Электронная почта" required>
+            <input type="password" id="register-password" placeholder="Придумайте пароль" minlength="6" required>
+            <button type="submit" class="auth-submit-btn">Создать Kristall ID</button>
+        </form>
+    </div>
+</div>
 
     <!-- Подключаем скрипт автоматических новостей -->
     <script src="script.js"></script>
