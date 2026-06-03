@@ -16,34 +16,45 @@
 </head>
 <body>
 
-    <!-- НАВИГАЦИЯ (HEADER) -->
+    <!-- НАВИГАЦИЯ (HEADER) — ИСПРАВЛЕННЫЙ ИДЕАЛЬНЫЙ ВАРИАНТ -->
     <header>
-        <div class="container header-wrapper">
-            <!-- Ссылка на логотип теперь ведет на главную -->
+        <div class="container header-wrapper" style="display: flex; justify-content: space-between; align-items: center; position: relative;">
+            
+            <!-- Левая часть: Логотип -->
             <a href="index.html" class="logo">KristallCommunity</a>
+            
+            <!-- Правая часть: Меню и Аватарки -->
+            <div style="display: flex; align-items: center; gap: 20px;">
+                
+                <!-- Меню навигации -->
+                <nav id="nav-menu">
+                    <!-- Профиль для ТЕЛЕФОНОВ (виден только внутри шторки бургера) -->
+                    <div class="menu-profile mobile-profile-block" style="display: none; align-items: center; gap: 10px; padding-bottom: 20px; border-bottom: 1px solid #1f2937; margin-bottom: 20px; cursor: pointer;">
+                        <span id="header-avatar-img-mobile"></span>
+                        <span class="menu-username" id="header-username-mobile">Гость</span>
+                    </div>
+                    <ul>
+                        <li><a href="index.html">Главная</a></li>
+                        <li><a href="projects.html" class="active">Проекты</a></li>
+                        <li><a href="marketplace.html">Магазин</a></li>
+                    </ul>
+                </nav>
 
-            <!-- Кнопка Бургера (3 полоски, видны только на мобилках) -->
-            <button class="burger-menu" id="burger-btn" aria-label="Открыть меню">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-
-            <!-- Меню сайта (на ПК — строка, на мобилках — выезжающая панель) -->
-            <nav id="nav-menu">
-                <!-- Блок будущего профиля (виден только на мобилках внутри меню) -->
-                <div class="menu-profile">
-                    <img src="https://flaticon.com" alt="User Avatar" class="menu-avatar">
-                    <span class="menu-username">Гость</span>
+                <!-- ПРОФИЛЬ ДЛЯ ПК (Красиво стоит справа от меню на больших экранах) -->
+                <div class="pc-profile-block" id="user-profile-block" style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                    <span id="header-avatar-img-pc"></span>
+                    <span class="menu-username" id="header-username" style="color: white; font-weight: bold; font-size: 14px;">Гость</span>
                 </div>
-                <ul>
-                    <li><a href="index.html">Главная</a></li>
-                    <li><a href="projects.html">Проекты</a></li>
-                </ul>
-            </nav>
+
+                <!-- Кнопка Бургера (3 полоски для мобилок) -->
+                <button class="burger-menu" id="burger-btn" aria-label="Открыть меню">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
         </div>
     </header>
-
 
     <!-- ДИНАМИЧЕСКИЙ ШАБЛОН ИГРЫ -->
         <div class="container">
@@ -82,12 +93,19 @@
                         <td id="game-developer" style="padding: 8px 0; text-align: right; color: #22d3ee; font-weight: 500;">-</td>
                     </tr>
                 </table>
+                
+                <!-- ГАЛЕРЕЯ СКРИНШОТОВ (ДОБАВЛЕНО) -->
+                <div id="screenshots-block" style="margin-top: 30px; display: none; font-family: sans-serif;">
+                    <h3 style="color: white; font-size: 16px; margin-bottom: 12px; border-left: 3px solid #22d3ee; padding-left: 10px;">Скриншоты геймплея</h3>
+                    <div id="screenshots-container" style="display: flex; gap: 15px; overflow-x: auto; padding: 10px 5px; scrollbar-width: thin;">
+                    <!-- Сюда JS подставит картинки -->
+                    </div>
+                </div>
             </div>
 
             <a href="projects.html" class="back-link">← Вернуться в каталог</a>
         </div>
     </div>
-
 
     <!-- Подключаем скрипт-генератор -->
     <script src="script.js"></script>
