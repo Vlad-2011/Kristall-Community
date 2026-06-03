@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой профиль - KristallCommunity</title>
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .profile-wrapper { display: flex; gap: 30px; max-width: 900px; margin: 40px auto; font-family: sans-serif; }
+        .profile-info-side { flex: 1; background-color: #111827; border: 1px solid #1f2937; border-radius: 12px; padding: 25px; box-shadow: 0 0 25px rgba(34, 211, 238, 0.03); text-align: center; }
+        .profile-edit-side { flex: 1; background-color: #111827; border: 1px solid #1f2937; border-radius: 12px; padding: 25px; box-shadow: 0 0 25px rgba(34, 211, 238, 0.03); }
+        .xp-bar-bg { width: 100%; height: 8px; background-color: #1f2937; border-radius: 10px; margin-top: 10px; overflow: hidden; border: 1px solid #374151; }
+        .xp-bar-fill { height: 100%; background-color: #f97316; width: 0%; transition: width 0.5s ease; }
+        .stat-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #1f2937; color: #9ca3af; font-size: 14px; align-items: center; }
+        .stat-val { color: white; font-weight: bold; display: flex; align-items: center; gap: 6px; }
+        .inv-item { display: inline-block; background-color: #1f2937; border: 1px solid #374151; padding: 5px 10px; border-radius: 6px; margin: 4px; color: white; font-size: 12px; }
+        .edit-input { width: 100%; padding: 10px; background-color: #1f2937; border: 1px solid #374151; color: white; border-radius: 6px; font-size: 14px; box-sizing: border-box; outline: none; margin-top: 5px; }
+        .edit-input:focus { border-color: #22d3ee; }
+        .coin-icon { display: inline-block; width: 12px; height: 12px; background-color: #f59e0b; border-radius: 50%; box-shadow: 0 0 8px #f59e0b; margin-left: 4px; }
+        
+        /* Стили контейнера для нашей новой SVG аватарки */
+        .avatar-container { width: 80px; height: 80px; margin: 0 auto 12px auto; display: flex; align-items: center; justify-content: center; }
+        .avatar-container img, .avatar-container svg { width: 100%; height: 100%; border-radius: 50%; border: 3px solid #22d3ee; object-fit: cover; box-sizing: border-box; }
+        .avatar-container svg { fill: #22d3ee; background-color: #1f2937; padding: 12px; }
+
+        @media (max-width: 768px) { .profile-wrapper { flex-direction: column; padding: 0 15px; } }
+    </style>
+</head>
+<body>
+
+    <!-- НАВИГАЦИЯ (HEADER) — ИСПРАВЛЕННЫЙ ИДЕАЛЬНЫЙ ВАРИАНТ -->
+    <header>
+        <div class="container header-wrapper" style="display: flex; justify-content: space-between; align-items: center; position: relative;">
+            
+            <!-- Левая часть: Логотип -->
+            <a href="index.html" class="logo">KristallCommunity</a>
+            
+            <!-- Правая часть: Меню и Аватарки -->
+            <div style="display: flex; align-items: center; gap: 20px;">
+                
+                <!-- Меню навигации -->
+                <nav id="nav-menu">
+                    <!-- Профиль для ТЕЛЕФОНОВ (виден только внутри шторки бургера) -->
+                    <div class="menu-profile mobile-profile-block" style="display: none; align-items: center; gap: 10px; padding-bottom: 20px; border-bottom: 1px solid #1f2937; margin-bottom: 20px; cursor: pointer;">
+                        <span id="header-avatar-img-mobile"></span>
+                        <span class="menu-username" id="header-username-mobile">Гость</span>
+                    </div>
+                    <ul>
+                        <li><a href="index.html">Главная</a></li>
+                        <li><a href="projects.html">Проекты</a></li>
+                        <li><a href="marketplace.html">Магазин</a></li>
+                    </ul>
+                </nav>
+
+                <!-- ПРОФИЛЬ ДЛЯ ПК (Красиво стоит справа от меню на больших экранах) -->
+                <div class="pc-profile-block" id="user-profile-block" style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                    <span id="header-avatar-img-pc"></span>
+                    <span class="menu-username" id="header-username" style="color: white; font-weight: bold; font-size: 14px;">Гость</span>
+                </div>
+
+                <!-- Кнопка Бургера (3 полоски для мобилок) -->
+                <button class="burger-menu" id="burger-btn" aria-label="Открыть меню">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="profile-wrapper">
+            
+            <!-- ЛЕВАЯ СТОРОНА: КАРТОЧКА ИГРОКА -->
+            <div class="profile-info-side">
+                <!-- Умный контейнер под аватарку (Сюда JS сам подставит либо картинку по ссылке, либо красивый SVG) -->
+                <div id="prof-avatar-box" class="avatar-container"></div>
+                
+                <h2 id="prof-username" style="color: white; margin: 0; font-size: 24px;">Загрузка...</h2>
+                <p id="prof-role" style="margin: 6px 0 0 0; font-weight: bold; font-size: 14px; opacity: 0.8;"></p>
+                <p id="prof-desc-text" style="color: #6b7280; font-size: 13px; font-style: italic; margin-top: 12px; background: #1f2937; padding: 10px; border-radius: 6px; border: 1px solid #1f2937; text-align: left;"></p>
+                
+                <div style="margin-top: 20px;">
+                    <div class="stat-row">
+                        <span>Уровень аккаунта:</span>
+                        <span class="stat-val" id="prof-level" style="color: #22d3ee;">1</span>
+                    </div>
+                    
+                    <div style="margin: 15px 0; text-align: left;">
+                        <div style="display: flex; justify-content: space-between; color: #9ca3af; font-size: 13px;">
+                            <span>Опыт (XP):</span>
+                            <span id="prof-xp-text">0 / 100</span>
+                        </div>
+                        <div class="xp-bar-bg"><div class="xp-bar-fill" id="prof-xp-fill"></div></div>
+                    </div>
+
+                    <div class="stat-row">
+                        <span>Баланс:</span>
+                        <span class="stat-val" style="color: #10b981;">
+                            <span id="balance-num">0</span>
+                            <span class="coin-icon"></span>
+                        </span>
+                    </div>
+                </div>
+
+                <div style="margin-top: 25px; text-align: left; border-top: 1px solid #1f2937; padding-top: 15px;">
+                    <h3 style="color: white; font-size: 15px; margin-bottom: 10px;">Мой инвентарь</h3>
+                    <div id="prof-inventory"></div>
+                </div>
+
+                <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: center;">
+                    <button class="action-btn" id="btn-open-workshop" style="display: none; background:#111827; border:1px solid #10b981; color:#10b981; padding:8px 12px; border-radius:6px; font-weight:bold; cursor:pointer;">🛠️ Мастерская</button>
+                </div>
+
+                <div id="code-output-block" style="display:none; margin-top:15px; text-align: left;">
+                    <div style="color:#9ca3af; font-size:11px; margin-bottom:5px;">Заявка готова! Отправьте этот код Владельцу:</div>
+                    <textarea id="code-output-text" class="edit-input" rows="3" readonly style="font-family:monospace; font-size:11px; color:#10b981; background:#070a12;"></textarea>
+                </div>
+            </div>
+
+            <!-- ПРАВАЯ СТОРОНА: НАСТРОЙКИ -->
+            <div class="profile-edit-side">
+                
+                <div id="panel-workshop" style="display: none; margin-bottom: 25px; border-bottom: 1px solid #1f2937; padding-bottom: 25px;">
+                    <h3 style="color: #10b981; font-size: 16px; margin: 0 0 15px 0;">🛠️ Подать заявку на публикацию</h3>
+                    <form id="workshop-game-form" style="display:flex; flex-direction:column; gap:10px;">
+                        <input type="text" id="work-title" class="edit-input" placeholder="Название проекта" required>
+                        <input type="text" id="work-platform" class="edit-input" placeholder="Платформа (Android / Windows)" required>
+                        <input type="text" id="work-short" class="edit-input" placeholder="Краткое описание" required>
+                        <textarea id="work-full" class="edit-input" placeholder="Полное описание проекта" rows="2" required></textarea>
+                        <button type="submit" style="background:#10b981; color:white; border:none; padding:10px; border-radius:6px; font-weight:bold; cursor:pointer;">Сгенерировать код проекта</button>
+                    </form>
+                </div>
+
+                <form id="profile-edit-form" style="display: flex; flex-direction: column; gap: 15px;">
+                    <h3 style="color: #22d3ee; font-size: 16px; margin: 0;">⚙️ Настройки аккаунта</h3>
+                    
+                    <div>
+                        <label style="color: #9ca3af; font-size: 12px;">Изменить никнейм:</label>
+                        <input type="text" id="edit-username" class="edit-input" maxlength="30" required>
+                    </div>
+
+                    <div>
+                        <label style="color: #9ca3af; font-size: 12px;">Ссылка на аватарку:</label>
+                        <input type="url" id="edit-avatar" class="edit-input" placeholder="Оставьте пустым для базовой">
+                    </div>
+
+                    <div>
+                        <label style="color: #9ca3af; font-size: 12px;">Новый пароль:</label>
+                        <!-- ИСПРАВЛЕНО: type="password" прячет вводимый пароль в кружочки -->
+                        <input type="password" id="edit-password" class="edit-input" minlength="6" required>
+                    </div>
+
+                    <div>
+                        <label style="color: #9ca3af; font-size: 12px;">Статус (О себе):</label>
+                        <textarea id="edit-desc" class="edit-input" rows="2" maxlength="500" style="resize: none; font-family: sans-serif;"></textarea>
+                    </div>
+
+                    <button type="submit" style="background-color: #22d3ee; color: #111827; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s;">Сохранить изменения</button>
+                </form>
+
+                <button id="logout-btn" style="width: 100%; margin-top: 25px; background-color: #27272a; color: #ef4444; border: 1px solid #3f3f46; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s;">Выйти из аккаунта</button>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
