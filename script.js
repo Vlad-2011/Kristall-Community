@@ -534,8 +534,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (typeof buildMainSideProfile === 'function') buildMainSideProfile(); 
             updateHeaderProfile();
             
-            // Открываем RuTube-канал твоего друга
-            window.open("https://rutube.ru", "_blank"); 
+            // Открываем RuTube-канал друга
+            window.open("https://youtube.com/@pixellog33?si=eX1Vk56NRqe4GPXh", "_blank"); 
         });
     }
 
@@ -746,7 +746,7 @@ function addPlayerXp(amount) {
 }
 
 // ==========================================================================
-// ИСПРАВЛЕНО: ВОЗВРАЩАЕМ УТЕРЯННУЮ ФУНКЦИЮ ВИДЖЕТА НА ГЛАВНОЙ СТРАНИЦЕ
+// ВОЗВРАЩАЕМ УТЕРЯННУЮ ФУНКЦИЮ ВИДЖЕТА НА ГЛАВНОЙ СТРАНИЦЕ
 // ==========================================================================
 function buildMainSideProfile() {
     const sideBox = document.getElementById('main-side-profile');
