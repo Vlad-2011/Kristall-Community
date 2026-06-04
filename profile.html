@@ -109,6 +109,17 @@
                     <div id="prof-inventory"></div>
                 </div>
 
+                <!-- БЛОК ЕЖЕДНЕВНЫХ НАГРАД -->
+                <div style="margin-top: 25px; text-align: left; border-top: 1px solid #1f2937; padding-top: 15px;">
+                    <h3 style="color: white; font-size: 15px; margin-bottom: 12px; font-family: sans-serif;">🎁 Награды</h3>
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <!-- Кнопка бонуса с изумрудным неоновым свечением -->
+                        <button class="action-btn" id="btn-daily-bonus" style="width: 100%; justify-content: center; border: 1px solid #10b981; color: #10b981; background: #111827; box-shadow: 0 0 10px rgba(16, 185, 129, 0.05);">⏳ Получить ежедневный бонус</button>
+                        <!-- Кнопка сундука с золотым геймерским свечением -->
+                        <button class="action-btn" id="btn-lucky-chest" style="width: 100%; justify-content: center; border: 1px solid #f59e0b; color: #f59e0b; background: #111827; box-shadow: 0 0 10px rgba(245, 158, 11, 0.05);">🍀 Открыть сундук удачи</button>
+                    </div>
+                </div>
+
                 <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: center;">
                     <button class="action-btn" id="btn-open-workshop" style="display: none; background:#111827; border:1px solid #10b981; color:#10b981; padding:8px 12px; border-radius:6px; font-weight:bold; cursor:pointer;">🛠️ Мастерская</button>
                 </div>
@@ -121,7 +132,6 @@
 
             <!-- ПРАВАЯ СТОРОНА: НАСТРОЙКИ -->
             <div class="profile-edit-side">
-                
                 <div id="panel-workshop" style="display: none; margin-bottom: 25px; border-bottom: 1px solid #1f2937; padding-bottom: 25px;">
                     <h3 style="color: #10b981; font-size: 16px; margin: 0 0 15px 0;">🛠️ Подать заявку на публикацию</h3>
                     <form id="workshop-game-form" style="display:flex; flex-direction:column; gap:10px;">
@@ -148,13 +158,24 @@
 
                     <div>
                         <label style="color: #9ca3af; font-size: 12px;">Новый пароль:</label>
-                        <!-- ИСПРАВЛЕНО: type="password" прячет вводимый пароль в кружочки -->
+                        <!-- type="password" прячет вводимый пароль в кружочки -->
                         <input type="password" id="edit-password" class="edit-input" minlength="6" required>
                     </div>
 
                     <div>
                         <label style="color: #9ca3af; font-size: 12px;">Статус (О себе):</label>
                         <textarea id="edit-desc" class="edit-input" rows="2" maxlength="500" style="resize: none; font-family: sans-serif;"></textarea>
+                    </div>
+
+                    <div>
+                        <label style="color: #9ca3af; font-size: 12px;">Цвет неоновой обводки аватарки:</label>
+                        <select id="edit-avatar-color" class="edit-input">
+                            <option value="#22d3ee">Циановый неон (Стандарт)</option>
+                            <option value="#f97316">Огненный оранжевый</option>
+                            <option value="#10b981">Изумрудный зелёный</option>
+                            <option value="#a855f7">Магический пурпурный</option>
+                            <option value="#ef4444">Критический красный</option>
+                        </select>
                     </div>
 
                     <button type="submit" style="background-color: #22d3ee; color: #111827; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s;">Сохранить изменения</button>
