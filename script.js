@@ -148,33 +148,51 @@ async function loadProjectsPage() {
 
 async function buildGameTemplatePage() {
     if (!document.getElementById('game-title')) return; 
+
     const urlParams = new URLSearchParams(window.location.search);
     const gameId = urlParams.get('game');
-    if (!gameId) return;
+    if (!gameId) { window.location.href = 'projects.html'; return; }
+
     try {
         const response = await fetch(GAMES_URL);
         const games = await response.json();
         const game = games.find(g => g.id === gameId);
         if (!game) return;
 
+        // 1. Заполняем основные тексты страницы
+        document.title = `${game.title} - KristallCommunity`;
         document.getElementById('game-title').innerText = game.title;
         document.getElementById('game-short-desc').innerText = game.short_desc;
         document.getElementById('game-full-desc').innerText = game.full_desc;
         document.getElementById('game-platform').innerText = game.platform;
         document.getElementById('game-version').innerText = game.version;
         document.getElementById('game-developer').innerText = game.developer || "KristallCommunity";
-        const downloadBtn = document.getElementById('game-download-btn');
-        downloadBtn.href = game.download_path;
-        downloadBtn.innerText = `Скачать (${game.price})`;
         
-        // РЕНДЕРИНГ ГАЛЕРЕИ СКРИНШОТОВ
+        // Настраиваем кнопку скачивания
+        const downloadBtn = document.getElementById('game-download-btn');
+        if (downloadBtn) {
+            downloadBtn.href = game.download_path;
+            const actionWord = game.type === 'pc' ? 'Скачать для ПК' : 'Скачать APK';
+            downloadBtn.innerText = `${actionWord} (${game.price})`;
+        }
+
+        // 2. ВЫВОД КЛЮЧЕВЫХ ОСОБЕННОСТЕЙ
+        const featuresContainer = document.getElementById('game-features');
+        if (featuresContainer && game.features) {
+            featuresContainer.innerHTML = '';
+            game.features.forEach(feat => {
+                const li = document.createElement('li');
+                li.innerHTML = `<span style="color: #10b981; font-weight: bold; margin-right: 5px;">✔</span> ${feat}`;
+                featuresContainer.appendChild(li);
+            });
+        }
+
+        // 3. РЕНДЕРИНГ ГАЛЕРЕИ СКРИНШОТОВ
         const scrBlock = document.getElementById('screenshots-block');
         const scrContainer = document.getElementById('screenshots-container');
-        
         if (game.screenshots && game.screenshots.length > 0 && scrBlock && scrContainer) {
             scrBlock.style.display = 'block';
-            scrContainer.innerHTML = ''; // Очищаем контейнер
-
+            scrContainer.innerHTML = '';
             game.screenshots.forEach(src => {
                 const img = document.createElement('img');
                 img.src = src;
@@ -185,21 +203,43 @@ async function buildGameTemplatePage() {
                 img.style.border = "1px solid #1f2937";
                 img.style.cursor = "pointer";
                 img.style.transition = "transform 0.2s, border-color 0.2s";
-
-                // Эффект увеличения при наведении в геймерском стиле
                 img.addEventListener('mouseenter', () => { img.style.transform = "scale(1.05)"; img.style.borderColor = "#22d3ee"; });
                 img.addEventListener('mouseleave', () => { img.style.transform = "scale(1)"; img.style.borderColor = "#1f2937"; });
-                
-                // Клик по скриншоту откроет его в новой вкладке во весь экран!
                 img.addEventListener('click', () => { window.open(src, '_blank'); });
-
                 scrContainer.appendChild(img);
             });
         } else if (scrBlock) {
             scrBlock.style.display = 'none';
         }
 
-    } catch (e) { console.error(e); }
+        // 4. ВЫВОД ИНСТРУКЦИИ ПО УСТАНОВКЕ
+        const instructionBlock = document.getElementById('instruction-block');
+        const instructionList = document.getElementById('instruction-list');
+        if (game.show_instruction && instructionBlock && instructionList) {
+            instructionBlock.style.display = 'block'; 
+            instructionList.innerHTML = ''; 
+            if (game.instruction_type === 'android') {
+                instructionList.innerHTML = `
+                    <li>Нажмите зеленую кнопку выше для скачивания файла.</li>
+                    <li>Разрешите сохранение файла в системе, если браузер выдаст предупреждение.</li>
+                    <li>Откройте скачанный APK на телефоне и в настройках безопасности разрешите <em>"Установку из неизвестных источников"</em>.</li>
+                    <li>Завершите процесс установки и запустите игру!</li>
+                `;
+            } else if (game.instruction_type === 'pc') {
+                instructionList.innerHTML = `
+                    <li>Скачайте архив с игрой по кнопке выше.</li>
+                    <li>Распакуйте скачанный ZIP/RAR архив в любую удобную папку на жестком диске.</li>
+                    <li>Найдите файл запуска игры с расширением <strong>.exe</strong> и дважды кликните по нему.</li>
+                    <li>Играйте! Рекомендуется создать ярлык на рабочем столе.</li>
+                `;
+            }
+        } else if (instructionBlock) {
+            instructionBlock.style.display = 'none'; 
+        }
+
+    } catch (e) { 
+        console.error("Ошибка сборки страницы шаблона:", e); 
+    }
 }
 
 function initFiltersAndSearch() {
@@ -428,18 +468,6 @@ function buildProfilePage() {
     document.getElementById('prof-level').innerText = currentUser.level;
     document.getElementById('balance-num').innerText = currentUser.balance;
     document.getElementById('prof-desc-text').innerText = currentUser.description || "Новобранец KristallCommunity.";
-
-    // const workshopBtn = document.getElementById('btn-open-workshop');
-    // if (workshopBtn) {
-    //     if (currentUser.clearance_level >= 3) { workshopBtn.style.display = 'flex'; } 
-    //     else { workshopBtn.style.display = 'none'; }
-    // }
-
-    const workshopBtn = document.getElementById('btn-open-workshop');
-    if (workshopBtn) {
-        if (currentUser.clearance_level >= 3) { workshopBtn.style.display = 'flex'; } 
-        else { workshopBtn.style.display = 'none'; }
-    }
 
     document.getElementById('edit-username').value = currentUser.username;
     document.getElementById('edit-avatar').value = currentUser.avatar_url || "";
