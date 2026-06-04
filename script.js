@@ -223,14 +223,14 @@ async function buildGameTemplatePage() {
                     <li>Нажмите зеленую кнопку выше для скачивания файла.</li>
                     <li>Разрешите сохранение файла в системе, если браузер выдаст предупреждение.</li>
                     <li>Откройте скачанный APK на телефоне и в настройках безопасности разрешите <em>"Установку из неизвестных источников"</em>.</li>
-                    <li>Завершите процесс установки и запустите игру!</li>
+                    <li>Завершите процесс установки и запустите приложение/игру!</li>
                 `;
             } else if (game.instruction_type === 'pc') {
                 instructionList.innerHTML = `
                     <li>Скачайте архив с игрой по кнопке выше.</li>
                     <li>Распакуйте скачанный ZIP/RAR архив в любую удобную папку на жестком диске.</li>
-                    <li>Найдите файл запуска игры с расширением <strong>.exe</strong> и дважды кликните по нему.</li>
-                    <li>Играйте! Рекомендуется создать ярлык на рабочем столе.</li>
+                    <li>Найдите файл запуска игры с расширением <strong>.exe</strong> и дважды нажмите по нему.</li>
+                    <li>Пользуйтесь! Рекомендуется создать ярлык на рабочем столе.</li>
                 `;
             }
         } else if (instructionBlock) {
@@ -458,10 +458,11 @@ function buildProfilePage() {
         profRoleField.style.color = nameColor;
     }
     
+    // Рендерим скелет аватарки (стили и цвета на неё наложит функция applyAvatarBorderColor)
     const avatarBox = document.getElementById('prof-avatar-box');
     if (avatarBox) {
         avatarBox.innerHTML = (currentUser.avatar_url && currentUser.avatar_url.startsWith('http')) 
-            ? `<img src="${currentUser.avatar_url}" style="width:80px; height:80px; border-radius:50%; border:3px solid #22d3ee; object-fit:cover;">`
+            ? `<img src="${currentUser.avatar_url}" style="width:80px; height:80px; border-radius:50%; object-fit:cover;">`
             : DEFAULT_SVG_LARGE;
     }
 
@@ -469,16 +470,42 @@ function buildProfilePage() {
     document.getElementById('balance-num').innerText = currentUser.balance;
     document.getElementById('prof-desc-text').innerText = currentUser.description || "Новобранец KristallCommunity.";
 
+    // Заполняем текстовые поля настроек
     document.getElementById('edit-username').value = currentUser.username;
     document.getElementById('edit-avatar').value = currentUser.avatar_url || "";
     document.getElementById('edit-password').value = currentUser.password || "";
     document.getElementById('edit-desc').value = currentUser.description || "";
 
+    // ДИСКОРД-МЕХАНИКА: Динамически перестраиваем список украшений в настройках профиля
+    const colorSelect = document.getElementById('edit-avatar-color');
+    if (colorSelect) {
+        colorSelect.innerHTML = `
+            <option value="#22d3ee">Циановый неон (Бесплатно)</option>
+            <option value="#f97316">Огненный оранжевый (Бесплатно)</option>
+            <option value="#10b981">Изумрудный зелёный (Бесплатно)</option>
+            <option value="#a855f7">Магический пурпурный (Бесплатно)</option>
+            <option value="#ef4444">Критический красный (Бесплатно)</option>
+        `;
+
+        // Платные анимированные рамки вылезают только если они реально куплены и лежат в инвентаре!
+        if (currentUser.inventory.includes("🔥 Украшение: Адское Пламя")) {
+            colorSelect.innerHTML += `<option value="decor-fire">🔥 Анимация: Адское Пламя</option>`;
+        }
+        if (currentUser.inventory.includes("⚡ Украшение: Кибер-Импульс")) {
+            colorSelect.innerHTML += `<option value="decor-cyber">⚡ Анимация: Кибер-Импульс</option>`;
+        }
+
+        // Подставляем текущий сохраненный выбор пользователя
+        colorSelect.value = currentUser.avatar_color || "#22d3ee";
+    }
+
+    // Рассчитываем шкалу прогресса опыта
     const reqXp = getRequiredXp(currentUser.level);
     document.getElementById('prof-xp-text').innerText = `${currentUser.xp} / ${reqXp} XP`;
     const percent = Math.min((currentUser.xp / reqXp) * 100, 100);
     document.getElementById('prof-xp-fill').style.width = `${percent}%`;
 
+    // Выводим инвентарь
     const invContainer = document.getElementById('prof-inventory');
     if (invContainer) {
         if (currentUser.inventory && currentUser.inventory.length > 0) {
@@ -492,19 +519,8 @@ function buildProfilePage() {
         } else { invContainer.innerHTML = '<span style="color: #4b5563;">В инвентаре пока пусто.</span>'; }
     }
     
-    // ЭФФЕКТ ПРЕДМЕТА: Включаем неоновую ауру, если она есть в инвентаре
-    const avatarImgElement = document.querySelector('#prof-avatar-box img');
-    const avatarSvgElement = document.querySelector('#prof-avatar-box svg');
-    
-    if (currentUser.inventory.includes("💥 Неоновая Аура")) {
-        // Если Аура куплена — заставляем аватарку сочно гореть ционовым неоном!
-        if (avatarImgElement) avatarImgElement.style.boxShadow = "0 0 20px #22d3ee, inset 0 0 20px #22d3ee";
-        if (avatarSvgElement) avatarSvgElement.style.boxShadow = "0 0 20px #22d3ee, inset 0 0 20px #22d3ee";
-    } else {
-        // Если ауры нет — сбрасываем свечение на стандартное
-        if (avatarImgElement) avatarImgElement.style.boxShadow = "none";
-        if (avatarSvgElement) avatarSvgElement.style.boxShadow = "none";
-    }
+    // В самом конце принудительно обновляем стили и анимации обводки под новые настройки
+    applyAvatarBorderColor();
 }
 
 function saveProfileChanges(newName, newAv, newPass, newDesc) {
@@ -659,21 +675,59 @@ document.addEventListener('DOMContentLoaded', () => {
 // СИСТЕМА НАГРАД И КАСТОМИЗАЦИЯ ОБВОДКИ (АВТОНОМНЫЙ БЛОК)
 // ==========================================================================
 
-// Функция применения цвета обводки аватарки
+// Функция применения цветов и анимированных украшений аватара (Discord Style)
 function applyAvatarBorderColor() {
     if (!currentUser) return;
-    const borderSelection = currentUser.avatar_color || "#22d3ee";
+    const selection = currentUser.avatar_color || "#22d3ee";
     
-    // Находим все аватарки на странице профиля и шапки
-    const profileImg = document.querySelector('#prof-avatar-box img');
-    const profileSvg = document.querySelector('#prof-avatar-box svg');
-    const pcImg = document.querySelector('#header-avatar-img-pc img');
-    const pcSvg = document.querySelector('#header-avatar-img-pc svg');
+    // Находим все аватарки на странице профиля и в меню
+    const targets = document.querySelectorAll('#prof-avatar-box img, #prof-avatar-box svg, #header-avatar-img-pc img, #header-avatar-img-pc svg, #header-avatar-img-mobile img, #header-avatar-img-mobile svg');
 
-    if (profileImg) profileImg.style.borderColor = borderSelection;
-    if (profileSvg) profileSvg.style.borderColor = borderSelection;
-    if (pcImg) pcImg.style.borderColor = borderSelection;
-    if (pcSvg) pcSvg.style.borderColor = borderSelection;
+    targets.forEach(el => {
+        if (!el) return;
+        
+        // Сбрасываем старые анимации и стили
+        el.className = ''; 
+        el.style.boxShadow = 'none';
+        el.style.animation = 'none';
+
+        if (selection === 'decor-fire') {
+            // Включаем огненную анимацию
+            el.classList.add('decor-fire-animation');
+        } else if (selection === 'decor-cyber') {
+            // Включаем кибер-молнии
+            el.classList.add('decor-cyber-animation');
+        } else {
+            // Если выбран обычный бесплатный цвет — просто красим рамку
+            el.style.borderColor = selection;
+            
+            // Если у пользователя куплена Неоновая Аура из старого набора — добавляем фоновое свечение к бесплатному цвету!
+            if (currentUser.inventory.includes("💥 Неоновая Аура")) {
+                el.style.boxShadow = `0 0 15px ${selection}, inset 0 0 10px ${selection}`;
+            }
+        }
+    });
+
+    // Также красим обводку в боковом виджете на главной странице (если мы на ней)
+    const sideAvatarContainer = document.querySelector('#main-side-profile div');
+    if (sideAvatarContainer) {
+        sideAvatarContainer.className = '';
+        sideAvatarContainer.style.boxShadow = 'none';
+        sideAvatarContainer.style.animation = 'none';
+        
+        if (selection === 'decor-fire') {
+            sideAvatarContainer.classList.add('decor-fire-animation');
+        } else if (selection === 'decor-cyber') {
+            sideAvatarContainer.classList.add('decor-cyber-animation');
+        } else {
+            sideAvatarContainer.style.borderColor = selection;
+            if (currentUser.inventory.includes("💥 Неоновая Аура")) {
+                sideAvatarContainer.style.boxShadow = `0 0 15px ${selection}`;
+            } else {
+                sideAvatarContainer.style.borderColor = '#374151'; // Дефолтная серая рамка виджета
+            }
+        }
+    }
 }
 
 // Функция добавления опыта с автоматическим повышением уровня!
@@ -736,7 +790,7 @@ document.addEventListener('DOMContentLoaded', () => {
             addPlayerXp(5); // +5 опыта
             
             localStorage.setItem('kristall_user', JSON.stringify(currentUser));
-            alert("📆 Ежедневный бонус получен! +25 монет, +35 XP.");
+            alert("📆 Ежедневный бонус получен! +5 монет, +5 XP.");
             if (typeof buildProfilePage === 'function') buildProfilePage();
         });
     }
@@ -816,7 +870,7 @@ function buildMainSideProfile() {
                 <svg viewBox="0 0 24 24" style="width:50%; height:50%; fill:#4b5563;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
             </div>
             <div style="color: white; font-weight: bold; font-size: 15px;">Kristall ID не найден</div>
-            <div style="color: #6b7280; font-size: 12px; margin-bottom: 8px;">Войдите, чтобы копить коины и открывать сундуки!</div>
+            <div style="color: #6b7280; font-size: 12px; margin-bottom: 8px;">Войдите, чтобы копить монеты и открывать сундуки!</div>
             <button class="auth-submit-btn" style="width: 100%; padding: 8px; font-size: 12px;" onclick="document.querySelector('.pc-profile-block').click()">Войти в аккаунт</button>
         `;
     }
@@ -837,23 +891,23 @@ document.addEventListener('DOMContentLoaded', () => {
             const now = Date.now();
             const lastAdClaim = currentUser.last_ad_claim || 0;
 
-            // Защита от спама: Клик разрешен раз в 1 час (3600000 миллисекунд)
-            if (now - lastAdClaim < 3600000) {
-                const minsLeft = Math.ceil((3600000 - (now - lastAdClaim)) / 60000);
-                alert(`⏳ Награда за поддержку партнёров уже получена! Следующий клик доступен через ${minsLeft} мин.`);
+            // Защита от спама: Клик разрешен раз в 1 день (86400000 миллисекунд)
+            if (now - lastAdClaim < 86400000) {
+                const minsLeft = Math.ceil((86400000 - (now - lastAdClaim)) / 3600000);
+                alert(`⏳ Награда за поддержку партнёров уже получена! Следующая награда будет доступна через ${minsLeft} ч.`);
                 return;
             }
 
             // Начисляем награду за лояльность
-            currentUser.balance += 5; // +5 урезанных коинов
+            currentUser.balance += 8; // +8 урезанных монет
             currentUser.last_ad_claim = now;
             localStorage.setItem('kristall_user', JSON.stringify(currentUser));
             
-            alert("📺 Спасибо за поддержку Kristall Partners! +5 Коинов зачислено на ваш баланс.");
+            alert("📺 Спасибо за поддержку Kristall Partners! +8 монет зачислено на ваш баланс.");
             buildMainSideProfile(); // Перерисовываем виджет на главной
             updateHeaderProfile(); // Обновляем баланс в шапке
             
-            // Открываем RuTube-канал твоего друга в новой вкладке! (Вставь реальную ссылку друга сюда)
+            // Открываем RuTube-канал друга в новой вкладке!
             window.open("https://rutube.ru", "_blank");
         });
     }
