@@ -566,3 +566,13 @@ footer {
     color: #111827 !important;
     box-shadow: 0 0 15px #f59e0b !important;
 }
+
+/* МЯГКАЯ ГЕЙМЕРСКАЯ АНИМАЦИЯ ФОНА САЙТА */
+body {
+    animation: spaceGlow 15s ease-in-out infinite alternate;
+}
+@keyframes spaceGlow {
+    0% { background-color: #0b0f19; }
+    50% { background-color: #0a0d14; box-shadow: inset 0 0 100px rgba(34, 211, 238, 0.02); } /* Едва заметный циановый отлив */
+    100% { background-color: #0d0914; box-shadow: inset 0 0 100px rgba(168, 85, 247, 0.01); } /* Едва заметный фиолетовый отлив */
+}
