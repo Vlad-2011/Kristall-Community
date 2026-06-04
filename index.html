@@ -51,43 +51,66 @@
         </div>
     </header>
 
-    <!-- ГЛАВНЫЙ БАННЕР -->
-    <section class="hero">
-        <div class="container">
-            <h1>Добро пожаловать в <span>Kristall</span></h1>
-            <p>Ваша персональная библиотека уникальных игровых проектов и мобильных приложений. Скачивайте файлы напрямую, без цензуры и ограничений.</p>
-        </div>
-    </section>
-
-    <!-- ОСНОВНОЙ КОНТЕНТ (Игры + Новости) -->
-    <div class="container main-layout">
-
-        <!-- ЛЕВАЯ КОЛОНКА: ИГРЫ -->
-        <main class="projects-section">
-            <h2 class="section-title">Наши проекты</h2>
-            <div class="grid">
-                <!-- Карточка Money Empire -->
-                <a href="money-empire.html" class="game-card">
-                    <div class="card-header">
-                        <h3>Money Empire</h3>
-                        <span class="badge">Android</span>
-                    </div>
-                    <p class="card-desc">Экономическая стратегия-симулятор. Постройте бизнес, управляйте акциями и создайте величайшую финансовую империю.</p>
-                    <div class="card-footer">Подробнее →</div>
-                </a>
-
-                <!-- Место для будущей Игры №2 -->
+    <!-- ГЛАВНЫЙ КОНТЕНТ (ДВУХКОЛОНОЧНЫЙ ХАБ) -->
+    <main class="container" style="margin-top: 30px; margin-bottom: 50px;">
+        <div style="display: flex; gap: 30px; flex-wrap: wrap;">
+            
+            <!-- ЛЕВАЯ КОЛОНКА: ЛЕНТА НОВОСТЕЙ (Занимает больше места) -->
+            <div style="flex: 2; min-width: 300px;">
+                <h2 class="section-title">Свежие события Kristall</h2>
+                <div id="news-container" class="news-list">
+                    <!-- Сюда JS подгрузит новости из news.json -->
+                </div>
             </div>
-        </main>
 
-        <!-- ПРАВАЯ КОЛОНКА: ЛЕНТА НОВОСТЕЙ -->
-        <aside class="news-section">
-            <h2 class="section-title">Свежие новости</h2>
-            <!-- Сюда JavaScript автоматически подставит данные из news.json -->
-            <div id="news-container" class="news-container"></div>
-        </aside>
+            <!-- ПРАВАЯ КОЛОНКА: ИНТЕРАКТИВНЫЙ САЙДБАР -->
+            <div style="flex: 1; min-width: 280px; display: flex; flex-direction: column; gap: 25px; font-family: sans-serif;">
+                
+                <!-- БЛОК 1: МИНИ-ПРОФИЛЬ KRISTALL ID -->
+                <div style="background-color: #111827; border: 1px solid #1f2937; border-radius: 12px; padding: 20px; text-align: center; box-shadow: 0 0 15px rgba(34, 211, 238, 0.02);">
+                    <h3 style="color: white; font-size: 14px; margin: 0 0 15px 0; text-transform: uppercase; letter-spacing: 1px; opacity: 0.6;">Мой Kristall ID</h3>
+                    <div id="main-side-profile" style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                        <!-- JS сам отрисует данные вошедшего или Гостя -->
+                    </div>
+                </div>
 
-    </div>
+                <!-- БЛОК 2: ТОП ПРОЕКТОВ КРИСТАЛЛ -->
+                <div style="background-color: #111827; border: 1px solid #1f2937; border-radius: 12px; padding: 20px; box-shadow: 0 0 15px rgba(34, 211, 238, 0.02);">
+                    <h3 style="color: #22d3ee; font-size: 14px; margin: 0 0 15px 0; text-transform: uppercase; letter-spacing: 1px; font-weight: bold;">🔥 Топ проектов недели</h3>
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <!-- Карточка 1: Твоя легендарная игра -->
+                        <a href="project-template.html?game=money-empire" style="display: flex; align-items: center; gap: 12px; background: #1f2937; padding: 10px; border-radius: 8px; text-decoration: none; border: 1px solid #1f2937; transition: 0.2s;" onmouseenter="this.style.borderColor='#22d3ee'" onmouseleave="this.style.borderColor='#1f2937'">
+                            <span style="font-size: 24px;">👑</span>
+                            <div>
+                                <div style="color: white; font-weight: bold; font-size: 14px;">Money Empire</div>
+                                <div style="color: #6b7280; font-size: 11px;">Стратегия-симулятор от Kristall</div>
+                            </div>
+                        </a>
+                        <!-- Заглушка под будущую игру друга -->
+                        <div style="display: flex; align-items: center; gap: 12px; background: #111827; padding: 10px; border-radius: 8px; border: 1px dashed #374151; opacity: 0.5;">
+                            <span style="font-size: 24px;">🎮</span>
+                            <div>
+                                <div style="color: #9ca3af; font-weight: bold; font-size: 14px;">Место свободно</div>
+                                <div style="color: #4b5563; font-size: 11px;">Ожидание релиза от Создателей</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- БЛОК 3: РЕКЛАМНАЯ СИСТЕМА (KRISTALL PARTNERS) -->
+                <div style="background-color: #111827; border: 1px solid #1f2937; border-radius: 12px; padding: 20px; box-shadow: 0 0 15px rgba(34, 211, 238, 0.02);">
+                    <h3 style="color: #f59e0b; font-size: 14px; margin: 0 0 12px 0; text-transform: uppercase; letter-spacing: 1px; font-weight: bold;">🤝 Kristall Partners</h3>
+                    <p style="color: #9ca3af; font-size: 12px; margin: 0 0 15px 0; line-height: 1.4;">Поддержи друга KristallCommunity! Перейди на его RuTube-канал, и твой баланс пополнится монетами.</p>
+                    
+                    <div style="background: #1f2937; border-radius: 8px; padding: 12px; border: 1px solid #374151; text-align: center;">
+                        <div style="color: white; font-weight: bold; font-size: 13px; margin-bottom: 10px;">Канал друга: PixelLog</div>
+                        <button class="action-btn" id="btn-promo-ad" style="width: 100%; justify-content: center; font-size: 12px; border-color: #f59e0b; color: #f59e0b; background: #111827; padding: 8px;" onmouseenter="this.style.background='#f59e0b'; this.style.color='#111827'; this.style.boxShadow='0 0 10px #f59e0b'" onmouseleave="this.style.background='#111827'; this.style.color='#f59e0b'; this.style.boxShadow='none'">📺 Поддержать канал (+5 монет)</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
 
     <!-- ПОДВАЛ САЙТА (FOOTER) -->
     <footer>
