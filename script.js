@@ -3,7 +3,7 @@
 // ==========================================
 const NEWS_URL = './databases/news.json';
 const GAMES_URL = './databases/projects.json'; 
-const USERS_URL = './databases/users.json'; // Путь к твоей глобальной базе друзей
+const USERS_URL = './databases/users.json'; 
 
 let allGamesData = []; 
 let currentTypeFilter = 'all';
@@ -18,10 +18,8 @@ function getRequiredXp(level) {
 }
 
 // ==========================================
-// 2. ГИБРИДНАЯ СИСТЕМА АККАУНТОВ (ВХОД ПО JSON)
+// 2. АВТОНОМНАЯ СИСТЕМА АККАУНТОВ (LOCAL STORAGE)
 // ==========================================
-
-// Локальная регистрация на устройстве
 function localRegister(username, email, password) {
     const newUser = {
         username: username,
@@ -46,15 +44,11 @@ function localRegister(username, email, password) {
     document.getElementById('auth-modal').style.display = 'none';
 }
 
-// УМНЫЙ ВХОД: Сначала ищет в глобальном users.json, если не нашел — проверяет локально
 async function localLogin(email, password) {
     try {
-        // 1. Пытаемся скачать файл пользователей с твоего GitHub (без токенов и CORS!)
         const response = await fetch(USERS_URL);
         if (response.ok) {
             const usersArray = await response.json();
-            
-            // Ищем друга по почте и паролю в твоем файле
             const globalUser = usersArray.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
             
             if (globalUser) {
@@ -63,7 +57,7 @@ async function localLogin(email, password) {
                 currentUser = globalUser;
                 updateHeaderProfile();
                 document.getElementById('auth-modal').style.display = 'none';
-                window.location.reload(); // Перезагружаем страницу чтобы применить права
+                window.location.reload(); 
                 return;
             }
         }
@@ -71,7 +65,6 @@ async function localLogin(email, password) {
         console.warn("Глобальная база данных недоступна, проверяем локальную память...", e);
     }
 
-    // 2. Если в users.json такого человека нет, проверяем локальный аккаунт этого устройства
     if (currentUser && currentUser.email.toLowerCase() === email.toLowerCase() && currentUser.password === password) {
         alert(`С возвращением, ${currentUser.username}! Авторизация выполнена.`);
         updateHeaderProfile();
@@ -113,7 +106,6 @@ async function loadProjectsPage() {
         const searchInput = document.getElementById('search-input');
         const searchText = searchInput ? searchInput.value.toLowerCase().trim() : '';
         
-        // Очищаем каталог перед выводом отфильтрованных карточек
         gridContainer.innerHTML = ''; 
 
         const filteredGames = allGamesData.filter(game => {
@@ -148,18 +140,15 @@ async function loadProjectsPage() {
 
 async function buildGameTemplatePage() {
     if (!document.getElementById('game-title')) return; 
-
     const urlParams = new URLSearchParams(window.location.search);
     const gameId = urlParams.get('game');
     if (!gameId) { window.location.href = 'projects.html'; return; }
-
     try {
         const response = await fetch(GAMES_URL);
         const games = await response.json();
         const game = games.find(g => g.id === gameId);
         if (!game) return;
 
-        // 1. Заполняем основные тексты страницы
         document.title = `${game.title} - KristallCommunity`;
         document.getElementById('game-title').innerText = game.title;
         document.getElementById('game-short-desc').innerText = game.short_desc;
@@ -168,7 +157,6 @@ async function buildGameTemplatePage() {
         document.getElementById('game-version').innerText = game.version;
         document.getElementById('game-developer').innerText = game.developer || "KristallCommunity";
         
-        // Настраиваем кнопку скачивания
         const downloadBtn = document.getElementById('game-download-btn');
         if (downloadBtn) {
             downloadBtn.href = game.download_path;
@@ -176,7 +164,6 @@ async function buildGameTemplatePage() {
             downloadBtn.innerText = `${actionWord} (${game.price})`;
         }
 
-        // 2. ВЫВОД КЛЮЧЕВЫХ ОСОБЕННОСТЕЙ
         const featuresContainer = document.getElementById('game-features');
         if (featuresContainer && game.features) {
             featuresContainer.innerHTML = '';
@@ -187,7 +174,6 @@ async function buildGameTemplatePage() {
             });
         }
 
-        // 3. РЕНДЕРИНГ ГАЛЕРЕИ СКРИНШОТОВ
         const scrBlock = document.getElementById('screenshots-block');
         const scrContainer = document.getElementById('screenshots-container');
         if (game.screenshots && game.screenshots.length > 0 && scrBlock && scrContainer) {
@@ -212,7 +198,6 @@ async function buildGameTemplatePage() {
             scrBlock.style.display = 'none';
         }
 
-        // 4. ВЫВОД ИНСТРУКЦИИ ПО УСТАНОВКЕ
         const instructionBlock = document.getElementById('instruction-block');
         const instructionList = document.getElementById('instruction-list');
         if (game.show_instruction && instructionBlock && instructionList) {
@@ -236,22 +221,16 @@ async function buildGameTemplatePage() {
         } else if (instructionBlock) {
             instructionBlock.style.display = 'none'; 
         }
-
-    } catch (e) { 
-        console.error("Ошибка сборки страницы шаблона:", e); 
-    }
+    } catch (e) { console.error("Ошибка сборки страницы шаблона:", e); }
 }
 
 function initFiltersAndSearch() {
     const searchInput = document.getElementById('search-input');
-    if (!searchInput) return; 
-    
+    if (!searchInput) return;
     searchInput.addEventListener('input', loadProjectsPage);
-    
     document.querySelectorAll('.filter-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const clickedBtn = e.target;
-            
             if (clickedBtn.hasAttribute('data-filter-type')) {
                 document.querySelectorAll('[data-filter-type]').forEach(b => b.classList.remove('active'));
                 currentTypeFilter = clickedBtn.getAttribute('data-filter-type');
@@ -260,7 +239,6 @@ function initFiltersAndSearch() {
                 document.querySelectorAll('[data-filter-plat]').forEach(b => b.classList.remove('active'));
                 currentPlatFilter = clickedBtn.getAttribute('data-filter-plat');
             }
-            
             clickedBtn.classList.add('active');
             loadProjectsPage();
         });
@@ -277,9 +255,8 @@ let currentMarketFilter = 'all';
 async function loadMarketplacePage() {
     const gridContainer = document.getElementById('marketplace-grid');
     const marketBalNum = document.getElementById('market-balance-num');
-    if (!gridContainer) return; // Запускаем только на странице marketplace.html
+    if (!gridContainer) return;
 
-    // Синхронизируем баланс пользователя с шапкой магазина
     if (marketBalNum) {
         marketBalNum.innerText = currentUser ? currentUser.balance : 0;
     }
@@ -289,13 +266,10 @@ async function loadMarketplacePage() {
             const response = await fetch(MARKET_URL);
             allMarketData = await response.json();
         }
-
         const searchInput = document.getElementById('market-search-input');
         const searchText = searchInput ? searchInput.value.toLowerCase().trim() : '';
+        gridContainer.innerHTML = '';
 
-        gridContainer.innerHTML = ''; // Очищаем витрину магазина
-
-        // Умная фильтрация по поиску и категориям (Предметы / Роли)
         const filteredProducts = allMarketData.filter(item => {
             const matchesSearch = item.title.toLowerCase().includes(searchText) || item.desc.toLowerCase().includes(searchText);
             const matchesCategory = (currentMarketFilter === 'all' || item.category === currentMarketFilter);
@@ -307,15 +281,10 @@ async function loadMarketplacePage() {
             return;
         }
 
-        // Строим красивые профессиональные карточки товаров
         filteredProducts.forEach(item => {
             const card = document.createElement('div');
             card.className = 'product-card';
-            
-            // Выбираем значок в зависимости от категории
             const icon = item.category === 'role' ? '👑' : '📦';
-            
-            // Проверяем, куплен ли уже предмет
             const isOwned = currentUser && currentUser.inventory.includes(item.title);
             const btnText = isOwned ? "Куплено" : `${item.price} 🪙`;
             const btnStyle = isOwned ? "background-color: #27272a; color: #71717a; cursor: not-allowed;" : "";
@@ -339,34 +308,28 @@ async function loadMarketplacePage() {
     }
 }
 
-// Слушатели кнопок-категорий и поиска в магазине
 function initMarketplaceFilters() {
     const searchInput = document.getElementById('market-search-input');
     if (!searchInput) return;
-
     searchInput.addEventListener('input', loadMarketplacePage);
-
     document.querySelectorAll('[data-market-filter]').forEach(btn => {
         btn.addEventListener('click', (e) => {
             document.querySelectorAll('[data-market-filter]').forEach(b => b.classList.remove('active'));
             e.target.classList.add('active');
             currentMarketFilter = e.target.getAttribute('data-market-filter');
-            loadMarketplacePage(); // Перерисовываем витрину магазина
+            loadMarketplacePage();
         });
     });
 }
 
-// Функция глобальной покупки в маркетплейсе с авто-прокачкой ролей!
 window.buyMarketItem = function(itemName, price, category) {
     if (!currentUser) { alert("Войдите в Kristall ID, чтобы совершать покупки!"); return; }
-    if (currentUser.balance < price) { alert("Недостаточно коинов на балансе Kristall ID!"); return; }
+    if (currentUser.balance < price) { alert("Недостаточно монет на балансе Kristall ID!"); return; }
     if (currentUser.inventory.includes(itemName)) { alert("Этот предмет уже куплен!"); return; }
 
-    // Списываем средства
     currentUser.balance -= price;
     currentUser.inventory.push(itemName);
 
-    // 🔥 ИГРОВАЯ МЕХАНИКА: Если куплена роль — автоматически повышаем clearance_level!
     if (category === 'role') {
         if (itemName.includes("Элита") && currentUser.clearance_level < 2) {
             currentUser.clearance_level = 2;
@@ -377,11 +340,8 @@ window.buyMarketItem = function(itemName, price, category) {
         }
     }
 
-    // Сохраняем новые данные в память устройства
     localStorage.setItem('kristall_user', JSON.stringify(currentUser));
     alert(`Успешная покупка: ${itemName}! Предмет добавлен в ваш инвентарь.`);
-    
-    // Мгновенно обновляем магазин и шапку сайта
     loadMarketplacePage();
     updateHeaderProfile();
 };
@@ -403,11 +363,11 @@ function updateHeaderProfile() {
     if (currentUser) {
         let nameColor = "white"; 
 
-        if (currentUser.clearance_level === 2) { nameColor = "#f97316"; } // Оранжевый для Элиты
-        else if (currentUser.clearance_level === 3) { nameColor = "#10b981"; } // Изумрудный для Создателей
-        else if (currentUser.clearance_level === 4) { nameColor = "#a855f7"; } // Фиолетовый для Модераторов
-        else if (currentUser.clearance_level === 5) { nameColor = "#ef4444"; } // Красный для Администраторов
-        else if (currentUser.clearance_level === 6) { nameColor = "#22d3ee"; } // Голубой для Владельца
+        if (currentUser.clearance_level === 2) { nameColor = "#f97316"; } 
+        else if (currentUser.clearance_level === 3) { nameColor = "#10b981"; } 
+        else if (currentUser.clearance_level === 4) { nameColor = "#a855f7"; } 
+        else if (currentUser.clearance_level === 5) { nameColor = "#ef4444"; } 
+        else if (currentUser.clearance_level === 6) { nameColor = "#22d3ee"; } 
 
         headerUsername.innerText = currentUser.username;
         headerUsername.style.color = nameColor; 
@@ -458,7 +418,6 @@ function buildProfilePage() {
         profRoleField.style.color = nameColor;
     }
     
-    // Рендерим скелет аватарки (стили и цвета на неё наложит функция applyAvatarBorderColor)
     const avatarBox = document.getElementById('prof-avatar-box');
     if (avatarBox) {
         avatarBox.innerHTML = (currentUser.avatar_url && currentUser.avatar_url.startsWith('http')) 
@@ -470,13 +429,11 @@ function buildProfilePage() {
     document.getElementById('balance-num').innerText = currentUser.balance;
     document.getElementById('prof-desc-text').innerText = currentUser.description || "Новобранец KristallCommunity.";
 
-    // Заполняем текстовые поля настроек
     document.getElementById('edit-username').value = currentUser.username;
     document.getElementById('edit-avatar').value = currentUser.avatar_url || "";
     document.getElementById('edit-password').value = currentUser.password || "";
     document.getElementById('edit-desc').value = currentUser.description || "";
 
-    // ДИСКОРД-МЕХАНИКА: Динамически перестраиваем список украшений в настройках профиля
     const colorSelect = document.getElementById('edit-avatar-color');
     if (colorSelect) {
         colorSelect.innerHTML = `
@@ -487,7 +444,6 @@ function buildProfilePage() {
             <option value="#ef4444">Критический красный (Бесплатно)</option>
         `;
 
-        // Платные анимированные рамки вылезают только если они реально куплены и лежат в инвентаре!
         if (currentUser.inventory.includes("🔥 Украшение: Адское Пламя")) {
             colorSelect.innerHTML += `<option value="decor-fire">🔥 Анимация: Адское Пламя</option>`;
         }
@@ -495,17 +451,14 @@ function buildProfilePage() {
             colorSelect.innerHTML += `<option value="decor-cyber">⚡ Анимация: Кибер-Импульс</option>`;
         }
 
-        // Подставляем текущий сохраненный выбор пользователя
         colorSelect.value = currentUser.avatar_color || "#22d3ee";
     }
 
-    // Рассчитываем шкалу прогресса опыта
     const reqXp = getRequiredXp(currentUser.level);
     document.getElementById('prof-xp-text').innerText = `${currentUser.xp} / ${reqXp} XP`;
     const percent = Math.min((currentUser.xp / reqXp) * 100, 100);
     document.getElementById('prof-xp-fill').style.width = `${percent}%`;
 
-    // Выводим инвентарь
     const invContainer = document.getElementById('prof-inventory');
     if (invContainer) {
         if (currentUser.inventory && currentUser.inventory.length > 0) {
@@ -519,16 +472,16 @@ function buildProfilePage() {
         } else { invContainer.innerHTML = '<span style="color: #4b5563;">В инвентаре пока пусто.</span>'; }
     }
     
-    // В самом конце принудительно обновляем стили и анимации обводки под новые настройки
     applyAvatarBorderColor();
 }
 
-function saveProfileChanges(newName, newAv, newPass, newDesc) {
+function saveProfileChanges(newName, newAv, newPass, newDesc, newColor) {
     if (!currentUser) return;
     currentUser.username = newName;
     currentUser.avatar_url = newAv;
     currentUser.password = newPass;
     currentUser.description = newDesc;
+    currentUser.avatar_color = newColor; // Намертво записываем украшение в память устройства!
 
     localStorage.setItem('kristall_user', JSON.stringify(currentUser));
     alert("Данные профиля Kristall ID успешно изменены!");
@@ -537,58 +490,125 @@ function saveProfileChanges(newName, newAv, newPass, newDesc) {
 }
 
 // ==========================================
-// 5. ИНИЦИАЛИЗАЦИЯ И СЛУШАТЕЛИ КЛИКОВ (DOM)
+// 5. ЕДИНЫЙ ГЛАВНЫЙ СЛУШАТЕЛЬ СОБЫТИЙ И КЛИКОВ (DOM)
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
+    // 1. Конвейер параллельной загрузки новостей и проектов
     Promise.all([loadNews(), loadProjectsPage(), buildGameTemplatePage(), loadMarketplacePage()])
         .then(() => { 
-            initFiltersAndSearch(); 
-            initMarketplaceFilters();
+            if (typeof initFiltersAndSearch === 'function') initFiltersAndSearch(); 
+            if (typeof initMarketplaceFilters === 'function') initMarketplaceFilters();
         })
         .catch(err => console.error("Ошибка загрузки модулей сайта:", err));
 
+    // 2. Отрисовка всех шапок и элементов профиля при заходе
     updateHeaderProfile();
     buildProfilePage();
+    if (typeof buildMainSideProfile === 'function') buildMainSideProfile();
+    
+    // Автоматически красим и анимируем рамки в шапке при загрузке любой страницы!
+    applyAvatarBorderColor();
 
-    const btnWork = document.getElementById('btn-open-workshop');
-    const panelWork = document.getElementById('panel-workshop');
-    if (btnWork && panelWork) {
-        btnWork.addEventListener('click', () => {
-            panelWork.style.display = panelWork.style.display === 'block' ? 'none' : 'block';
+    // 3. Логика нативной рекламы Kristall Partners (Рекламная система сообщества)
+    const btnPromo = document.getElementById('btn-promo-ad');
+    if (btnPromo) {
+        btnPromo.addEventListener('click', () => {
+            if (!currentUser) {
+                alert("🔒 Функция доступна только для авторизованных пользователей Kristall ID!");
+                return;
+            }
+            const now = Date.now();
+            const lastAdClaim = currentUser.last_ad_claim || 0;
+
+            if (now - lastAdClaim < 86400000) {
+                const hoursLeft = Math.ceil((86400000 - (now - lastAdClaim)) / 3600000);
+                alert(`⏳ Награда за поддержку партнёров уже получена! Следующая награда будет доступна через ${hoursLeft} ч.`);
+                return;
+            }
+
+            currentUser.balance += 8; // +8 монет
+            currentUser.last_ad_claim = now;
+            localStorage.setItem('kristall_user', JSON.stringify(currentUser));
+            
+            alert("📺 Спасибо за поддержку Kristall Partners! +8 монет зачислено на ваш баланс.");
+            if (typeof buildMainSideProfile === 'function') buildMainSideProfile(); 
+            updateHeaderProfile();
+            
+            // Открываем RuTube-канал твоего друга
+            window.open("https://rutube.ru", "_blank"); 
         });
     }
 
-    const workshopForm = document.getElementById('workshop-game-form');
-    if (workshopForm) {
-        workshopForm.addEventListener('submit', (e) => {
+    // 4. Логика ежедневного бонуса профиля (Раз в 24 часа)
+    const btnDaily = document.getElementById('btn-daily-bonus');
+    if (btnDaily) {
+        btnDaily.addEventListener('click', () => {
+            if (!currentUser) return;
+            const now = Date.now();
+            const lastClaim = currentUser.last_daily_claim || 0;
+
+            if (now - lastClaim < 86400000) {
+                const hoursLeft = Math.ceil((86400000 - (now - lastClaim)) / 3600000);
+                alert(`⏳ Бонус еще не перезарядился! Вернитесь через ${hoursLeft} ч.`);
+                return;
+            }
+
+            currentUser.balance += 5; // +5 честных монет
+            currentUser.last_daily_claim = now;
+            addPlayerXp(5); // +5 опыта
+            
+            localStorage.setItem('kristall_user', JSON.stringify(currentUser));
+            alert("📆 Ежедневный бонус получен! +5 монет, +5 XP.");
+            buildProfilePage();
+        });
+    }
+    // 5. Логика сундука удачи профиля (Раз в 1 час)
+    const btnChest = document.getElementById('btn-lucky-chest');
+    if (btnChest) {
+        btnChest.addEventListener('click', () => {
+            if (!currentUser) return;
+            const now = Date.now();
+            const lastChest = currentUser.last_chest_claim || 0;
+
+            if (now - lastChest < 3600000) {
+                const minsLeft = Math.ceil((3600000 - (now - lastChest)) / 60000);
+                alert(`⏳ Сундук пуст! До следующего открытия осталось ${minsLeft} мин.`);
+                return;
+            }
+
+            const coinWin = Math.floor(Math.random() * 15) + 1; // От 1 до 16 монет
+            const xpWin = Math.floor(Math.random() * 15) + 5;   // От 5 до 20 опыта
+
+            currentUser.balance += coinWin;
+            currentUser.last_chest_claim = now;
+            addPlayerXp(xpWin);
+
+            localStorage.setItem('kristall_user', JSON.stringify(currentUser));
+            alert(`📦 Вы открыли Сундук Удачи и получили:\n🪙 +${coinWin} монет\n✨ +${xpWin} XP`);
+            buildProfilePage();
+        });
+    }
+
+    // 6. Слушатель формы настроек профиля (Сохранение с цветом/анимацией)
+    const profileForm = document.getElementById('profile-edit-form');
+    if (profileForm) {
+        profileForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const gTitle = document.getElementById('work-title').value;
-            const gPlat = document.getElementById('work-platform').value;
-            const gShort = document.getElementById('work-short').value;
-            const gFull = document.getElementById('work-full').value;
+            
+            const colorSelect = document.getElementById('edit-avatar-color');
+            const chosenColor = colorSelect ? colorSelect.value : "#22d3ee";
 
-            const jsonOutput = {
-                id: gTitle.toLowerCase().replace(/\s+/g, '-'),
-                title: gTitle,
-                platform: gPlat,
-                type: gPlat.toLowerCase().includes('win') ? 'pc' : 'mobile',
-                developer: currentUser ? currentUser.username : "Создатель",
-                version: "v1.0.0",
-                price: "FREE",
-                download_path: "ССЫЛКУ_УКАЖЕТ_ВЛАДЕЛЕЦ",
-                short_desc: gShort,
-                full_desc: gFull,
-                features: ["Увлекательный геймплей", "Чистая оптимизация"],
-                requirements: "Уточняются",
-                show_instruction: true,
-                instruction_type: gPlat.toLowerCase().includes('win') ? 'pc' : 'android'
-            };
-
-            document.getElementById('code-output-text').value = JSON.stringify(jsonOutput, null, 2);
-            document.getElementById('code-output-block').style.display = 'block';
+            saveProfileChanges(
+                document.getElementById('edit-username').value,
+                document.getElementById('edit-avatar').value,
+                document.getElementById('edit-password').value,
+                document.getElementById('edit-desc').value,
+                chosenColor // Передаем украшение пятым параметром!
+            );
         });
     }
 
+    // 7. Адаптивное бургер-меню для мобилок
     const burgerBtn = document.getElementById('burger-btn');
     const navMenu = document.getElementById('nav-menu');
     if (burgerBtn && navMenu) {
@@ -599,6 +619,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // 8. Открытие модалки авторизации при клике по аватаркам
     const pcProfile = document.querySelector('.pc-profile-block');
     const mobileProfile = document.querySelector('.mobile-profile-block');
     const authModal = document.getElementById('auth-modal');
@@ -614,19 +635,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('close-auth-btn').addEventListener('click', () => { authModal.style.display = 'none'; });
     }
 
-    const profileForm = document.getElementById('profile-edit-form');
-    if (profileForm) {
-        profileForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            saveProfileChanges(
-                document.getElementById('edit-username').value,
-                document.getElementById('edit-avatar').value,
-                document.getElementById('edit-password').value,
-                document.getElementById('edit-desc').value
-            );
-        });
-    }
-
+    // 9. Формы авторизации (Вход и Регистрация)
     const logForm = document.getElementById('login-form');
     if (logForm) {
         logForm.addEventListener('submit', (e) => {
@@ -647,6 +656,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // 10. Переключение вкладок модалки Вход / Регистрация
     const tabLogin = document.getElementById('tab-login-btn');
     const tabRegister = document.getElementById('tab-register-btn');
     if (tabLogin && tabRegister) {
@@ -662,6 +672,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // 11. Кнопка Выхода из аккаунта
     const logoutBtn = document.getElementById('logout-btn');
     if (logoutBtn) {
         logoutBtn.addEventListener('click', () => {
@@ -669,74 +680,62 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = 'index.html';
         });
     }
-});
+}); // Здесь идеально закрывается DOMContentLoaded из Части А!
 
 // ==========================================================================
-// СИСТЕМА НАГРАД И КАСТОМИЗАЦИЯ ОБВОДКИ (АВТОНОМНЫЙ БЛОК)
+// 6. СИСТЕМА НАГРАД И КАСТОМИЗАЦИЯ ОБВОДКИ (АВТОНОМНЫЕ ФУНКЦИИ)
 // ==========================================================================
 
-// Функция применения цветов и анимированных украшений аватара (Discord Style)
 function applyAvatarBorderColor() {
     if (!currentUser) return;
     const selection = currentUser.avatar_color || "#22d3ee";
     
-    // Находим все аватарки на странице профиля и в меню
     const targets = document.querySelectorAll('#prof-avatar-box img, #prof-avatar-box svg, #header-avatar-img-pc img, #header-avatar-img-pc svg, #header-avatar-img-mobile img, #header-avatar-img-mobile svg');
 
     targets.forEach(el => {
         if (!el) return;
-        
-        // Сбрасываем старые анимации и стили
         el.className = ''; 
         el.style.boxShadow = 'none';
         el.style.animation = 'none';
 
         if (selection === 'decor-fire') {
-            // Включаем огненную анимацию
             el.classList.add('decor-fire-animation');
         } else if (selection === 'decor-cyber') {
-            // Включаем кибер-молнии
             el.classList.add('decor-cyber-animation');
         } else {
-            // Если выбран обычный бесплатный цвет — просто красим рамку
             el.style.borderColor = selection;
-            
-            // Если у пользователя куплена Неоновая Аура из старого набора — добавляем фоновое свечение к бесплатному цвету!
             if (currentUser.inventory.includes("💥 Неоновая Аура")) {
                 el.style.boxShadow = `0 0 15px ${selection}, inset 0 0 10px ${selection}`;
             }
         }
     });
 
-    // Также красим обводку в боковом виджете на главной странице (если мы на ней)
     const sideAvatarContainer = document.querySelector('#main-side-profile div');
     if (sideAvatarContainer) {
         sideAvatarContainer.className = '';
         sideAvatarContainer.style.boxShadow = 'none';
         sideAvatarContainer.style.animation = 'none';
+        sideAvatarContainer.style.borderColor = 'transparent'; // Сбрасываем дефолт
         
         if (selection === 'decor-fire') {
             sideAvatarContainer.classList.add('decor-fire-animation');
         } else if (selection === 'decor-cyber') {
             sideAvatarContainer.classList.add('decor-cyber-animation');
         } else {
+            // Если выбрана обычная бесплатная обводка
             sideAvatarContainer.style.borderColor = selection;
             if (currentUser.inventory.includes("💥 Неоновая Аура")) {
                 sideAvatarContainer.style.boxShadow = `0 0 15px ${selection}`;
-            } else {
-                sideAvatarContainer.style.borderColor = '#374151'; // Дефолтная серая рамка виджета
             }
         }
     }
 }
 
-// Функция добавления опыта с автоматическим повышением уровня!
 function addPlayerXp(amount) {
     if (!currentUser) return;
     currentUser.xp += amount;
     let reqXp = currentUser.level * 100;
 
-    // Цикл повышения уровня, если опыта больше чем нужно
     while (currentUser.xp >= reqXp) {
         currentUser.xp -= reqXp;
         currentUser.level += 1;
@@ -746,84 +745,9 @@ function addPlayerXp(amount) {
     localStorage.setItem('kristall_user', JSON.stringify(currentUser));
 }
 
-// Запуск слушателей наград в профиле
-document.addEventListener('DOMContentLoaded', () => {
-    applyAvatarBorderColor(); // Включаем цвет при загрузке
-
-    // 1. Сохранение цвета обводки из формы настроек
-    const profileForm = document.getElementById('profile-edit-form');
-    if (profileForm) {
-        profileForm.addEventListener('submit', () => {
-            const colorSelect = document.getElementById('edit-avatar-color');
-            if (colorSelect && currentUser) {
-                currentUser.avatar_color = colorSelect.value;
-                localStorage.setItem('kristall_user', JSON.stringify(currentUser));
-                applyAvatarBorderColor();
-            }
-        });
-    }
-    
-    // Подгружаем выбранный цвет в выпадающий список настроек
-    const colorSelect = document.getElementById('edit-avatar-color');
-    if (colorSelect && currentUser && currentUser.avatar_color) {
-        colorSelect.value = currentUser.avatar_color;
-    }
-
-    // 2. Логика ежедневного бонуса (Раз в 24 часа)
-    const btnDaily = document.getElementById('btn-daily-bonus');
-    if (btnDaily) {
-        btnDaily.addEventListener('click', () => {
-            if (!currentUser) return;
-            const now = Date.now();
-            const lastClaim = currentUser.last_daily_claim || 0;
-
-            // Проверяем, прошло ли 24 часа (86400000 миллисекунд)
-            if (now - lastClaim < 86400000) {
-                const hoursLeft = Math.ceil((86400000 - (now - lastClaim)) / 3600000);
-                alert(`⏳ Бонус еще не перезарядился! Вернитесь через ${hoursLeft} ч.`);
-                return;
-            }
-
-            // Начисляем фиксированную награду
-            currentUser.balance += 5; // +5 монет
-            currentUser.last_daily_claim = now;
-            addPlayerXp(5); // +5 опыта
-            
-            localStorage.setItem('kristall_user', JSON.stringify(currentUser));
-            alert("📆 Ежедневный бонус получен! +5 монет, +5 XP.");
-            if (typeof buildProfilePage === 'function') buildProfilePage();
-        });
-    }
-
-    // 3. Логика сундука удачи (Рандомный выигрыш раз в 1 час)
-    const btnChest = document.getElementById('btn-lucky-chest');
-    if (btnChest) {
-        btnChest.addEventListener('click', () => {
-            if (!currentUser) return;
-            const now = Date.now();
-            const lastChest = currentUser.last_chest_claim || 0;
-
-            if (now - lastChest < 3600000) { // 1 час = 3600000 мс
-                const minsLeft = Math.ceil((3600000 - (now - lastChest)) / 60000);
-                alert(`⏳ Сундук пуст! До следующего открытия осталось ${minsLeft} мин.`);
-                return;
-            }
-
-            const coinWin = Math.floor(Math.random() * 15) + 1; // От 1 до 16 коинов
-            const xpWin = Math.floor(Math.random() * 15) + 5;   // От 5 до 20 опыта
-
-            currentUser.balance += coinWin;
-            currentUser.last_chest_claim = now;
-            addPlayerXp(xpWin);
-
-            localStorage.setItem('kristall_user', JSON.stringify(currentUser));
-            alert(`📦 Вы открыли Сундук Удачи и получили:\n🪙 +${coinWin} монет\n✨ +${xpWin} XP`);
-            if (typeof buildProfilePage === 'function') buildProfilePage();
-        });
-    }
-});
-
-// Функция отрисовки виджета мини-профиля на главной странице
+// ==========================================================================
+// ИСПРАВЛЕНО: ВОЗВРАЩАЕМ УТЕРЯННУЮ ФУНКЦИЮ ВИДЖЕТА НА ГЛАВНОЙ СТРАНИЦЕ
+// ==========================================================================
 function buildMainSideProfile() {
     const sideBox = document.getElementById('main-side-profile');
     if (!sideBox) return; 
@@ -837,18 +761,15 @@ function buildMainSideProfile() {
         else if (currentUser.clearance_level === 5) { roleName = "Администратор"; nameColor = "#ef4444"; }
         else if (currentUser.clearance_level === 6) { roleName = "Владелец"; nameColor = "#22d3ee"; }
 
-        // Настраиваем обводку аватарки
-        const currentBorderColor = currentUser.avatar_color || "#22d3ee"; // Берем выбранный цвет или циановый
+        const currentBorderColor = currentUser.avatar_color || "#22d3ee"; 
         
-        // Если Аура куплена — включаем неоновую тень, если нет — обводка будет просто аккуратной цветной линией
         const hasAuraShadow = currentUser.inventory.includes("💥 Неоновая Аура") 
             ? `box-shadow: 0 0 15px ${currentBorderColor}; border: 2px solid ${currentBorderColor};` 
-            : `border: 2px solid ${currentBorderColor};`; // Теперь рамка красится в цвет даже без Ауры!
+            : `border: 2px solid ${currentBorderColor};`; 
 
-        // Формируем HTML самой аватарки (картинка по ссылке или наш фирменный SVG шлем)
         const sideAvatarHTML = (currentUser.avatar_url && currentUser.avatar_url.startsWith('http'))
             ? `<img src="${currentUser.avatar_url}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`
-            : `<svg viewBox="0 0 24 24" style="width:60%; height:60%; fill:${currentUser.inventory.includes("💥 Неоновая Аура") ? currentBorderColor : "#9ca3af"};"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>`;
+            : `<svg viewBox="0 0 24 24" style="width:60%; height:60%; fill:${currentBorderColor};"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>`;
 
         sideBox.innerHTML = `
             <div style="width: 55px; height: 55px; border-radius: 50%; ${hasAuraShadow} display: flex; align-items: center; justify-content: center; background: #1f2937; margin-bottom: 5px; overflow:hidden;">
@@ -864,7 +785,6 @@ function buildMainSideProfile() {
             <a href="profile.html" style="width: 100%; margin-top: 12px; background: #1f2937; color: white; border: 1px solid #374151; padding: 8px; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: bold; transition: 0.2s; text-align:center;" onmouseenter="this.style.borderColor='#22d3ee'" onmouseleave="this.style.borderColor='#374151'">Открыть личный кабинет</a>
         `;
     } else {
-        // Если зашел Гость
         sideBox.innerHTML = `
             <div style="width: 50px; height: 50px; border-radius: 50%; border: 2px dashed #374151; display: flex; align-items: center; justify-content: center; background: #111827; margin-bottom: 5px;">
                 <svg viewBox="0 0 24 24" style="width:50%; height:50%; fill:#4b5563;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
@@ -874,41 +794,5 @@ function buildMainSideProfile() {
             <button class="auth-submit-btn" style="width: 100%; padding: 8px; font-size: 12px;" onclick="document.querySelector('.pc-profile-block').click()">Войти в аккаунт</button>
         `;
     }
+    applyAvatarBorderColor();
 }
-
-// Запуск рекламной системы Kristall Partners
-document.addEventListener('DOMContentLoaded', () => {
-    buildMainSideProfile(); // Отрисовываем виджет при загрузке
-
-    const btnPromo = document.getElementById('btn-promo-ad');
-    if (btnPromo) {
-        btnPromo.addEventListener('click', () => {
-            if (!currentUser) {
-                alert("🔒 Функция доступна только для авторизованных пользователей Kristall ID!");
-                return;
-            }
-
-            const now = Date.now();
-            const lastAdClaim = currentUser.last_ad_claim || 0;
-
-            // Защита от спама: Клик разрешен раз в 1 день (86400000 миллисекунд)
-            if (now - lastAdClaim < 86400000) {
-                const minsLeft = Math.ceil((86400000 - (now - lastAdClaim)) / 3600000);
-                alert(`⏳ Награда за поддержку партнёров уже получена! Следующая награда будет доступна через ${minsLeft} ч.`);
-                return;
-            }
-
-            // Начисляем награду за лояльность
-            currentUser.balance += 8; // +8 урезанных монет
-            currentUser.last_ad_claim = now;
-            localStorage.setItem('kristall_user', JSON.stringify(currentUser));
-            
-            alert("📺 Спасибо за поддержку Kristall Partners! +8 монет зачислено на ваш баланс.");
-            buildMainSideProfile(); // Перерисовываем виджет на главной
-            updateHeaderProfile(); // Обновляем баланс в шапке
-            
-            // Открываем RuTube-канал друга в новой вкладке!
-            window.open("https://rutube.ru", "_blank");
-        });
-    }
-});
