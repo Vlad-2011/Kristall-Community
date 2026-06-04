@@ -554,3 +554,15 @@ footer {
         display: flex !important; /* Внутри шторки на телефонах блок плавно появляется */
     }
 }
+
+/* ЭФФЕКТЫ ДЛЯ КНОПОК НАГРАД */
+#btn-daily-bonus:hover {
+    background-color: #10b981 !important;
+    color: #111827 !important;
+    box-shadow: 0 0 15px #10b981 !important;
+}
+#btn-lucky-chest:hover {
+    background-color: #f59e0b !important;
+    color: #111827 !important;
+    box-shadow: 0 0 15px #f59e0b !important;
+}
