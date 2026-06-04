@@ -654,3 +654,117 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// ==========================================================================
+// СИСТЕМА НАГРАД И КАСТОМИЗАЦИЯ ОБВОДКИ (АВТОНОМНЫЙ БЛОК)
+// ==========================================================================
+
+// Функция применения цвета обводки аватарки
+function applyAvatarBorderColor() {
+    if (!currentUser) return;
+    const borderSelection = currentUser.avatar_color || "#22d3ee";
+    
+    // Находим все аватарки на странице профиля и шапки
+    const profileImg = document.querySelector('#prof-avatar-box img');
+    const profileSvg = document.querySelector('#prof-avatar-box svg');
+    const pcImg = document.querySelector('#header-avatar-img-pc img');
+    const pcSvg = document.querySelector('#header-avatar-img-pc svg');
+
+    if (profileImg) profileImg.style.borderColor = borderSelection;
+    if (profileSvg) profileSvg.style.borderColor = borderSelection;
+    if (pcImg) pcImg.style.borderColor = borderSelection;
+    if (pcSvg) pcSvg.style.borderColor = borderSelection;
+}
+
+// Функция добавления опыта с автоматическим повышением уровня!
+function addPlayerXp(amount) {
+    if (!currentUser) return;
+    currentUser.xp += amount;
+    let reqXp = currentUser.level * 100;
+
+    // Цикл повышения уровня, если опыта больше чем нужно
+    while (currentUser.xp >= reqXp) {
+        currentUser.xp -= reqXp;
+        currentUser.level += 1;
+        reqXp = currentUser.level * 100;
+        alert(`🎉 КРИСТАЛЛЬНЫЙ АП! Вы достигли ${currentUser.level} уровня аккаунта!`);
+    }
+    localStorage.setItem('kristall_user', JSON.stringify(currentUser));
+}
+
+// Запуск слушателей наград в профиле
+document.addEventListener('DOMContentLoaded', () => {
+    applyAvatarBorderColor(); // Включаем цвет при загрузке
+
+    // 1. Сохранение цвета обводки из формы настроек
+    const profileForm = document.getElementById('profile-edit-form');
+    if (profileForm) {
+        profileForm.addEventListener('submit', () => {
+            const colorSelect = document.getElementById('edit-avatar-color');
+            if (colorSelect && currentUser) {
+                currentUser.avatar_color = colorSelect.value;
+                localStorage.setItem('kristall_user', JSON.stringify(currentUser));
+                applyAvatarBorderColor();
+            }
+        });
+    }
+    
+    // Подгружаем выбранный цвет в выпадающий список настроек
+    const colorSelect = document.getElementById('edit-avatar-color');
+    if (colorSelect && currentUser && currentUser.avatar_color) {
+        colorSelect.value = currentUser.avatar_color;
+    }
+
+    // 2. Логика ежедневного бонуса (Раз в 24 часа)
+    const btnDaily = document.getElementById('btn-daily-bonus');
+    if (btnDaily) {
+        btnDaily.addEventListener('click', () => {
+            if (!currentUser) return;
+            const now = Date.now();
+            const lastClaim = currentUser.last_daily_claim || 0;
+
+            // Проверяем, прошло ли 24 часа (86400000 миллисекунд)
+            if (now - lastClaim < 86400000) {
+                const hoursLeft = Math.ceil((86400000 - (now - lastClaim)) / 3600000);
+                alert(`⏳ Бонус еще не перезарядился! Вернитесь через ${hoursLeft} ч.`);
+                return;
+            }
+
+            // Начисляем фиксированную награду
+            currentUser.balance += 5; // +5 монет
+            currentUser.last_daily_claim = now;
+            addPlayerXp(5); // +5 опыта
+            
+            localStorage.setItem('kristall_user', JSON.stringify(currentUser));
+            alert("📆 Ежедневный бонус получен! +25 монет, +35 XP.");
+            if (typeof buildProfilePage === 'function') buildProfilePage();
+        });
+    }
+
+    // 3. Логика сундука удачи (Рандомный выигрыш раз в 1 час)
+    const btnChest = document.getElementById('btn-lucky-chest');
+    if (btnChest) {
+        btnChest.addEventListener('click', () => {
+            if (!currentUser) return;
+            const now = Date.now();
+            const lastChest = currentUser.last_chest_claim || 0;
+
+            if (now - lastChest < 3600000) { // 1 час = 3600000 мс
+                const minsLeft = Math.ceil((3600000 - (now - lastChest)) / 60000);
+                alert(`⏳ Сундук пуст! До следующего открытия осталось ${minsLeft} мин.`);
+                return;
+            }
+
+            const coinWin = Math.floor(Math.random() * 15) + 1; // От 1 до 16 коинов
+            const xpWin = Math.floor(Math.random() * 15) + 5;   // От 5 до 20 опыта
+
+            currentUser.balance += coinWin;
+            currentUser.last_chest_claim = now;
+            addPlayerXp(xpWin);
+
+            localStorage.setItem('kristall_user', JSON.stringify(currentUser));
+            alert(`📦 Вы открыли Сундук Удачи и получили:\n🪙 +${coinWin} монет\n✨ +${xpWin} XP`);
+            if (typeof buildProfilePage === 'function') buildProfilePage();
+        });
+    }
+});
