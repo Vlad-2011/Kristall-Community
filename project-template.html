@@ -56,8 +56,8 @@
         </div>
     </header>
 
-    <!-- ДИНАМИЧЕСКИЙ ШАБЛОН ИГРЫ -->
-        <div class="container">
+     <!-- ДИНАМИЧЕСКИЙ ШАБЛОН ИГРЫ (STEAM STYLE) -->
+     <div class="container">
         <div class="content">
             <h1 id="game-title" style="color: white; margin-top: 0; font-size: 32px;">Загрузка...</h1>
             <p id="game-short-desc" style="color: #9ca3af; line-height: 1.6; font-size: 16px;"></p>
@@ -65,20 +65,49 @@
             <a href="#" id="game-download-btn" download class="btn-download">Скачать APK</a>
 
             <div style="text-align: left; margin-top: 40px; border-top: 1px solid #374151; padding-top: 25px;">
-                <h3 style="color: #22d3ee; margin-bottom: 15px;">О проекте</h3>
-                <p id="game-full-desc" style="color: #d1d5db; line-height: 1.6; font-size: 14px;"></p>
+                
+                <!-- 1. МЕДИАЗОНА (ТРЕЙЛЕР И СКРИНШОТЫ НАВЕРХУ) -->
+                <div style="display: flex; flex-direction: column; gap: 25px; margin-bottom: 35px;">
+                    
+                    <!-- Официальный трейлер -->
+                    <div id="trailer-block" style="display: none; font-family: sans-serif;">
+                        <!-- ИСПРАВЛЕНО: Убрали палочку, сделали цвет #22d3ee и размер 16px -->
+                        <h3 style="color: #22d3ee; font-size: 16px; font-weight: bold; margin-bottom: 12px; padding-left: 0;">Официальный видео-трейлер</h3>
+                        <div id="trailer-container">
+                            <!-- Сюда JS вставит плеер -->
+                        </div>
+                    </div>
 
-                <h3 style="color: #22d3ee; margin-top: 25px; margin-bottom: 15px;">Ключевые особенности:</h3>
-                <ul id="game-features" style="color: #d1d5db; line-height: 1.8; font-size: 14px; padding-left: 20px; list-style: none;"></ul>
+                    <!-- Галерея скриншотов -->
+                    <div id="screenshots-block" style="display: none; font-family: sans-serif;">
+                        <!-- ИСПРАВЛЕНО: Привели к единому стилю без палочек -->
+                        <h3 style="color: #22d3ee; font-size: 16px; font-weight: bold; margin-bottom: 12px; padding-left: 0;">Скриншоты</h3>
+                        <div id="screenshots-container" style="display: flex; gap: 15px; overflow-x: auto; padding: 10px 5px; scrollbar-width: thin;">
+                            <!-- Сюда JS подставит картинки -->
+                        </div>
+                    </div>
+                </div>
 
-                <!-- ДИНАМИЧЕСКИЙ БЛОК ИНСТРУКЦИИ (Управляется через JS) -->
-                <div id="instruction-block" style="display: none; margin-top: 25px;">
-                    <h3 style="color: #22d3ee; margin-bottom: 15px;">Как установить?</h3>
+                <!-- 2. ПОДРОБНОЕ ТЕКСТОВОЕ ОПИСАНИЕ -->
+                <div id="desc-block" style="margin-bottom: 25px;">
+                    <h3 style="color: #22d3ee; font-size: 16px; font-weight: bold; margin-bottom: 12px;">О проекте</h3>
+                    <p id="game-full-desc" style="color: #d1d5db; line-height: 1.6; font-size: 14px;"></p>
+                </div>
+
+                <!-- КЛЮЧЕВЫЕ ОСОБЕННОСТИ -->
+                <div id="features-block" style="margin-top: 25px; margin-bottom: 25px; display: none;">
+                    <h3 style="color: #22d3ee; font-size: 16px; font-weight: bold; margin-bottom: 12px;">Ключевые особенности:</h3>
+                    <ul id="game-features" style="color: #d1d5db; line-height: 1.8; font-size: 14px; padding-left: 20px; list-style: none;"></ul>
+                </div>
+
+                <!-- ДИНАМИЧЕСКИЙ БЛОК ИНСТРУКЦИИ -->
+                <div id="instruction-block" style="display: none; margin-top: 25px; margin-bottom: 25px;">
+                    <h3 style="color: #22d3ee; font-size: 16px; font-weight: bold; margin-bottom: 12px;">Как установить?</h3>
                     <ol id="instruction-list" style="color: #9ca3af; line-height: 1.6; font-size: 13px; padding-left: 20px;"></ol>
                 </div>
 
                 <!-- ТЕХНИЧЕСКИЕ ХАРАКТЕРИСТИКИ -->
-                <table style="width: 100%; margin-top: 30px; border-collapse: collapse; font-size: 13px; color: #9ca3af;">
+                <table style="width: 100%; margin-top: 35px; border-collapse: collapse; font-size: 13px; color: #9ca3af;">
                     <tr style="border-bottom: 1px solid #374151;">
                         <td style="padding: 8px 0; font-weight: bold; color: #d1d5db;">Платформа:</td>
                         <td id="game-platform" style="padding: 8px 0; text-align: right;">-</td>
@@ -89,25 +118,21 @@
                     </tr>
                     <tr>
                         <td style="padding: 8px 0; font-weight: bold; color: #d1d5db;">Разработчик:</td>
-                        <!-- Сюда встанет имя автора из JSON -->
                         <td id="game-developer" style="padding: 8px 0; text-align: right; color: #22d3ee; font-weight: 500;">-</td>
                     </tr>
                 </table>
-                
-                <!-- ГАЛЕРЕЯ СКРИНШОТОВ -->
-                <div id="screenshots-block" style="margin-top: 30px; display: none; font-family: sans-serif;">
-                    <h3 style="color: white; font-size: 16px; margin-bottom: 12px; border-left: 3px solid #22d3ee; padding-left: 10px;">Скриншоты</h3>
-                    <div id="screenshots-container" style="display: flex; gap: 15px; overflow-x: auto; padding: 10px 5px; scrollbar-width: thin;">
-                    <!-- Сюда JS подставит картинки -->
-                    </div>
-                </div>
+
             </div>
 
-            <a href="projects.html" class="back-link">← Вернуться в каталог</a>
+            <a href="projects.html" class="back-link" style="margin-top: 40px; display: inline-block;">← Вернуться в каталог</a>
         </div>
     </div>
 
-    <!-- Подключаем скрипт-генератор -->
-    <script src="script.js"></script>
+    <!-- ВЕЛИКАЯ СВЯЗКА СКРИПТОВ KRISTALL (СТРОГИЙ ПОРЯДОК ПОДКЛЮЧЕНИЯ!) -->
+    <script src="js/core.js"></script>
+    <script src="js/content.js"></script>
+    <script src="js/interface.js"></script>
+    <script src="js/app.js"></script>
+
 </body>
 </html>
