@@ -41,17 +41,16 @@ function applyAvatarBorderColor() {
         el.style.animation = 'none';
 
         // Проверяем выбранный аксессуар и включаем нужный CSS-класс
-        if (selection === 'decor-fire') {
-            el.classList.add('decor-fire-animation');
-        } else if (selection === 'decor-cyber') {
-            el.classList.add('decor-cyber-animation');
-        } else if (selection === 'decor-gold') {
-            el.classList.add('decor-gold-animation'); // Твой Золотой блеск!
-        } else if (selection === 'decor-emerald') {
-            el.classList.add('decor-emerald-animation'); // Изумрудный пульс!
-        } else if (selection === 'decor-ruby') {
-            el.classList.add('decor-ruby-animation'); // Кровавый рубин!
-        } else {
+        if (selection === 'decor-fire') { el.classList.add('decor-fire-animation'); } 
+        else if (selection === 'decor-cyber') { el.classList.add('decor-cyber-animation'); }
+        else if (selection === 'decor-gold') { el.classList.add('decor-gold-animation'); }
+        else if (selection === 'decor-emerald') { el.classList.add('decor-emerald-animation'); }
+        else if (selection === 'decor-ruby') { el.classList.add('decor-ruby-animation'); }
+        else if (selection === 'decor-crown') { el.classList.add('decor-crown-animation'); }
+        else if (selection === 'decor-ghost') { el.classList.add('decor-ghost-animation'); }
+        else if (selection === 'decor-matter') { el.classList.add('decor-matter-animation'); }
+        else if (selection === 'decor-pulse') { el.classList.add('decor-pulse-animation'); }
+        else {
             // Если выбран обычный бесплатный цвет — просто красим границу
             el.style.borderColor = selection;
             
@@ -186,12 +185,6 @@ function buildProfilePage() {
             <option value="#ef4444">Критический красный (Бесплатно)</option>
         `;
 
-        if (currentUser.inventory && currentUser.inventory.includes("🔥 Украшение: Адское Пламя")) {
-            colorSelect.innerHTML += `<option value="decor-fire">🔥 Анимация: Адское Пламя</option>`;
-        }
-        if (currentUser.inventory && currentUser.inventory.includes("⚡ Украшение: Кибер-Импульс")) {
-            colorSelect.innerHTML += `<option value="decor-cyber">⚡ Анимация: Кибер-Импульс</option>`;
-        }
         if (currentUser.inventory && currentUser.inventory.includes("✨ Украшение: Золотой Блеск")) {
             colorSelect.innerHTML += `<option value="decor-gold">✨ Анимация: Золотой Блеск</option>`;
         }
@@ -200,6 +193,18 @@ function buildProfilePage() {
         }
         if (currentUser.inventory && currentUser.inventory.includes("🔴 Украшение: Кровавый Рубин")) {
             colorSelect.innerHTML += `<option value="decor-ruby">🔴 Анимация: Кровавый Рубин</option>`;
+        }
+        if (currentUser.inventory && currentUser.inventory.includes("👑 Украшение: Корона Владыки")) {
+            colorSelect.innerHTML += `<option value="decor-crown">👑 Анимация: Корона Владыки</option>`;
+        }
+        if (currentUser.inventory && currentUser.inventory.includes("👻 Украшение: Призрак")) {
+            colorSelect.innerHTML += `<option value="decor-ghost">👻 Анимация: Призрак</option>`;
+        }
+        if (currentUser.inventory && currentUser.inventory.includes("🔮 Украшение: Тёмная Материя")) {
+            colorSelect.innerHTML += `<option value="decor-matter">🔮 Анимация: Тёмная Материя</option>`;
+        }
+        if (currentUser.inventory && currentUser.inventory.includes("✨ Украшение: Кристальный Пульс")) {
+            colorSelect.innerHTML += `<option value="decor-pulse">✨ Анимация: Кристальный Пульс</option>`;
         }
 
         colorSelect.value = currentUser.avatar_color || "#22d3ee";
