@@ -577,26 +577,6 @@ body {
     100% { background-color: #0d0914; box-shadow: inset 0 0 100px rgba(168, 85, 247, 0.01); } /* Едва заметный фиолетовый отлив */
 }
 
-/* АНИМИРОВАННЫЕ УКРАШЕНИЯ АВАТАРА В СТИЛЕ DISCORD NITRO */
-.decor-fire-animation {
-    animation: firePulse 2s ease-in-out infinite alternate !important;
-    border: 3px solid #ef4444 !important;
-}
-@keyframes firePulse {
-    0% { box-shadow: 0 0 10px #f97316, inset 0 0 10px #ef4444; filter: hue-rotate(0deg); }
-    100% { box-shadow: 0 0 25px #ef4444, inset 0 0 20px #f97316; filter: hue-rotate(20deg); }
-}
-
-.decor-cyber-animation {
-    animation: cyberLightning 1.5s linear infinite !important;
-    border: 3px dashed #22d3ee !important;
-}
-@keyframes cyberLightning {
-    0% { box-shadow: 0 0 15px #22d3ee, 0 0 30px #a855f7; }
-    50% { box-shadow: 0 0 25px #a855f7, 0 0 40px #22d3ee; filter: brightness(1.3); }
-    100% { box-shadow: 0 0 15px #22d3ee, 0 0 30px #a855f7; }
-}
-
 /* ФИРМЕННЫЕ ВСПОЛЫВАЮЩИЕ УВЕДОМЛЕНИЯ KRISTALL (БЕЗ ALERT) */
 #kristall-toast {
     position: fixed;
@@ -620,33 +600,4 @@ body {
 }
 #kristall-toast.show {
     top: 25px; /* Выезжает сверху */
-}
-
-/* 3 НОВЫХ АНИМИРОВАННЫХ УКРАШЕНИЯ ДЛЯ МАГАЗИНА И ПРОФИЛЯ */
-.decor-gold-animation {
-    animation: goldGleam 2.5s ease-in-out infinite alternate !important;
-    border: 3px solid #fbbf24 !important;
-}
-@keyframes goldGleam {
-    0% { box-shadow: 0 0 10px #d97706, inset 0 0 5px #fbbf24; filter: brightness(1); }
-    50% { box-shadow: 0 0 25px #fbbf24, inset 0 0 15px #fff; filter: brightness(1.3); }
-    100% { box-shadow: 0 0 10px #d97706, inset 0 0 5px #fbbf24; filter: brightness(1); }
-}
-
-.decor-emerald-animation {
-    animation: emeraldPulse 2s ease-in-out infinite alternate !important;
-    border: 3px solid #34d399 !important;
-}
-@keyframes emeraldPulse {
-    0% { box-shadow: 0 0 8px #059669; }
-    100% { box-shadow: 0 0 22px #34d399, 0 0 35px rgba(52, 211, 153, 0.2); }
-}
-
-.decor-ruby-animation {
-    animation: rubyGlow 1.8s ease-in-out infinite alternate !important;
-    border: 3px solid #f87171 !important;
-}
-@keyframes rubyGlow {
-    0% { box-shadow: 0 0 10px #dc2626; filter: hue-rotate(0deg); }
-    100% { box-shadow: 0 0 25px #ef4444; filter: hue-rotate(15deg); }
 }
