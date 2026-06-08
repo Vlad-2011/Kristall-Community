@@ -235,14 +235,17 @@ async function loadMarketplacePage() {
             
             let previewClass = "";
             let previewStyle = "border: 2px solid #374151;"; 
-            
+
+            // Внутри функции loadMarketplacePage в js/content.js:
             if (item.id === 'decor-fire') previewClass = "decor-fire-animation";
             else if (item.id === 'decor-cyber') previewClass = "decor-cyber-animation";
             else if (item.id === 'decor-gold') previewClass = "decor-gold-animation";
             else if (item.id === 'decor-emerald') previewClass = "decor-emerald-animation";
             else if (item.id === 'decor-ruby') previewClass = "decor-ruby-animation";
-            else if (item.price === 250) previewStyle = "border: 2px solid #f97316;"; 
-            else if (item.price === 500) previewStyle = "border: 2px solid #10b981;"; 
+            else if (item.id === 'decor-crown') previewClass = "decor-crown-animation";
+            else if (item.id === 'decor-ghost') previewClass = "decor-ghost-animation";
+            else if (item.id === 'decor-matter') previewClass = "decor-matter-animation";
+            else if (item.id === 'decor-pulse') previewClass = "decor-pulse-animation";
 
             const isOwned = currentUser && currentUser.inventory.includes(item.title);
             const btnText = isOwned ? "Куплено" : "Купить";
@@ -283,7 +286,6 @@ function initMarketplaceFilters() {
     });
 }
 
-// ИСПРАВЛЕНО: Теперь эта функция просто открывает красивое окно подтверждения Kristall!
 let activePurchaseItem = null; // Запоминаем, какой товар хочет купить юзер
 
 window.buyMarketItem = function(itemName, price, category) {
@@ -291,36 +293,40 @@ window.buyMarketItem = function(itemName, price, category) {
     if (currentUser.balance < price) { showKristallToast("Недостаточно монет на балансе Kristall ID!", "⏳"); return; }
     if (currentUser.inventory.includes(itemName)) { showKristallToast("Этот предмет уже куплен!", "📦"); return; }
 
-    // Ищем ID товара в нашей скачанной базе, чтобы понять, какую анимацию запустить в превью
     const itemData = allMarketData.find(i => i.title === itemName);
     if (!itemData) return;
 
-    // Сохраняем данные для финальной покупки
     activePurchaseItem = { itemName, price, category };
 
-    // Заполняем тексты в модальном окне
+    // Заполняем тексты и строку цены
     document.getElementById('modal-product-title').innerText = itemData.title;
     document.getElementById('modal-product-desc').innerText = itemData.desc;
+    document.getElementById('modal-product-price').innerHTML = `${itemData.price} <span class="coin-icon"></span>`;
 
-    // Настраиваем "живую" анимацию в левой зоне модалки
+    // ИСПРАВЛЕНО: Настройка манекена. Жестко вшиваем центрирование и круглую маску!
     const previewZone = document.getElementById('modal-preview-zone');
     if (previewZone) {
-        previewZone.className = ''; // Очищаем старые классы
+        previewZone.className = ''; 
         previewZone.style.boxShadow = 'none';
         previewZone.style.animation = 'none';
-        previewZone.style.borderColor = 'transparent';
+        previewZone.style.border = "none";
+        
+        // Манекен всегда остается идеально круглым и центрирует любую неоновую рамку
+        previewZone.style.cssText = "width: 130px; height: 130px; border-radius: 50% !important; overflow: hidden !important; display: flex !important; align-items: center !important; justify-content: center !important; background: #1f2937; box-sizing: border-box;";
 
+        // Внутри функции window.buyMarketItem в js/content.js:
         if (itemData.id === 'decor-fire') previewZone.classList.add('decor-fire-animation');
         else if (itemData.id === 'decor-cyber') previewZone.classList.add('decor-cyber-animation');
         else if (itemData.id === 'decor-gold') previewZone.classList.add('decor-gold-animation');
         else if (itemData.id === 'decor-emerald') previewZone.classList.add('decor-emerald-animation');
         else if (itemData.id === 'decor-ruby') previewZone.classList.add('decor-ruby-animation');
-        else if (itemData.price === 250) previewZone.style.border = "3px solid #f97316"; // Элита
-        else if (itemData.price === 500) previewZone.style.border = "3px solid #10b981"; // Создатель
-        else previewZone.style.border = "2px solid #374151";
+        else if (itemData.id === 'decor-crown') previewZone.classList.add('decor-crown-animation');
+        else if (itemData.id === 'decor-ghost') previewZone.classList.add('decor-ghost-animation');
+        else if (itemData.id === 'decor-matter') previewZone.classList.add('decor-matter-animation');
+        else if (itemData.id === 'decor-pulse') previewZone.classList.add('decor-pulse-animation');
+        else previewZone.style.border = "3px solid #374151";
     }
 
-    // Плавно показываем окно
     document.getElementById('confirm-modal').style.display = 'flex';
 };
 
