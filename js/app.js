@@ -193,4 +193,26 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = 'index.html';
         });
     }
+    
+    // ЛОГИКА ОКНА ПОДТВЕРЖДЕНИЯ ПОКУПКИ (ДОБАВЛЕНО ДЕНЬ 6)
+    const modalConfirmBtn = document.getElementById('modal-confirm-btn');
+    const modalCancelBtn = document.getElementById('modal-cancel-btn');
+    const confirmModal = document.getElementById('confirm-modal');
+
+    if (modalConfirmBtn) {
+        modalConfirmBtn.addEventListener('click', () => {
+            // Запускаем скрытую функцию списания денег из content.js
+            if (typeof executeFinalPurchase === 'function') {
+                executeFinalPurchase();
+            }
+        });
+    }
+
+    if (modalCancelBtn && confirmModal) {
+        modalCancelBtn.addEventListener('click', () => {
+            confirmModal.style.display = 'none'; // Просто закрываем окно без списаний
+            showKristallToast("Покупка отменена", "❌");
+        });
+    }
+
 }); // Конец DOMContentLoaded! Конвейер полностью сошёлся.
