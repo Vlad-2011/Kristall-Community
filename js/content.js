@@ -21,7 +21,7 @@ async function loadNews() {
 
 async function loadProjectsPage() {
     const gridContainer = document.getElementById('projects-grid');
-    if (!gridContainer) return; 
+    if (!gridContainer) return;
     try {
         if (allGamesData.length === 0) {
             const response = await fetch(GAMES_URL);
@@ -245,7 +245,7 @@ async function loadMarketplacePage() {
             else if (item.price === 500) previewStyle = "border: 2px solid #10b981;"; 
 
             const isOwned = currentUser && currentUser.inventory.includes(item.title);
-            const btnText = isOwned ? "Куплено" : `${item.price} 🪙`;
+            const btnText = isOwned ? "Куплено" : "Купить";
             const btnStyle = isOwned ? "background-color: #27272a; color: #71717a; cursor: not-allowed;" : "";
 
             card.innerHTML = `
@@ -283,10 +283,51 @@ function initMarketplaceFilters() {
     });
 }
 
+// ИСПРАВЛЕНО: Теперь эта функция просто открывает красивое окно подтверждения Kristall!
+let activePurchaseItem = null; // Запоминаем, какой товар хочет купить юзер
+
 window.buyMarketItem = function(itemName, price, category) {
     if (!currentUser) { showKristallToast("Войдите в Kristall ID, чтобы совершать покупки!", "🔒"); return; }
     if (currentUser.balance < price) { showKristallToast("Недостаточно монет на балансе Kristall ID!", "⏳"); return; }
     if (currentUser.inventory.includes(itemName)) { showKristallToast("Этот предмет уже куплен!", "📦"); return; }
+
+    // Ищем ID товара в нашей скачанной базе, чтобы понять, какую анимацию запустить в превью
+    const itemData = allMarketData.find(i => i.title === itemName);
+    if (!itemData) return;
+
+    // Сохраняем данные для финальной покупки
+    activePurchaseItem = { itemName, price, category };
+
+    // Заполняем тексты в модальном окне
+    document.getElementById('modal-product-title').innerText = itemData.title;
+    document.getElementById('modal-product-desc').innerText = itemData.desc;
+
+    // Настраиваем "живую" анимацию в левой зоне модалки
+    const previewZone = document.getElementById('modal-preview-zone');
+    if (previewZone) {
+        previewZone.className = ''; // Очищаем старые классы
+        previewZone.style.boxShadow = 'none';
+        previewZone.style.animation = 'none';
+        previewZone.style.borderColor = 'transparent';
+
+        if (itemData.id === 'decor-fire') previewZone.classList.add('decor-fire-animation');
+        else if (itemData.id === 'decor-cyber') previewZone.classList.add('decor-cyber-animation');
+        else if (itemData.id === 'decor-gold') previewZone.classList.add('decor-gold-animation');
+        else if (itemData.id === 'decor-emerald') previewZone.classList.add('decor-emerald-animation');
+        else if (itemData.id === 'decor-ruby') previewZone.classList.add('decor-ruby-animation');
+        else if (itemData.price === 250) previewZone.style.border = "3px solid #f97316"; // Элита
+        else if (itemData.price === 500) previewZone.style.border = "3px solid #10b981"; // Создатель
+        else previewZone.style.border = "2px solid #374151";
+    }
+
+    // Плавно показываем окно
+    document.getElementById('confirm-modal').style.display = 'flex';
+};
+
+// Функция финального списания средств (вызывается из app.js при клике на "Подтвердить")
+function executeFinalPurchase() {
+    if (!activePurchaseItem || !currentUser) return;
+    const { itemName, price, category } = activePurchaseItem;
 
     currentUser.balance -= price;
     currentUser.inventory.push(itemName);
@@ -294,18 +335,23 @@ window.buyMarketItem = function(itemName, price, category) {
     if (category === 'role') {
         if (itemName.includes("Элита") && currentUser.clearance_level < 2) {
             currentUser.clearance_level = 2;
-            showKristallToast("Ваш уровень допуска повышен до Уровня 2 [Элита]!", "👑");
+            showKristallToast("Ваш уровень допуска повышен до Элиты!", "👑");
         } else if (itemName.includes("Создатель") && currentUser.clearance_level < 3) {
             currentUser.clearance_level = 3;
-            showKristallToast("Ваш уровень допуска повышен до Уровня 3 [Создатель]!", "👑");
+            showKristallToast("Ваш уровень допуска повышен до Создателя!", "👑");
         }
     }
 
     localStorage.setItem('kristall_user', JSON.stringify(currentUser));
     showKristallToast(`Успешная покупка: ${itemName}!`, "🛒");
-    loadMarketplacePage();
-    updateHeaderProfile();
-};
+    
+    // Закрываем окно и обновляем интерфейсы
+    document.getElementById('confirm-modal').style.display = 'none';
+    activePurchaseItem = null;
+    
+    if (typeof loadMarketplacePage === 'function') loadMarketplacePage();
+    if (typeof updateHeaderProfile === 'function') updateHeaderProfile();
+}
 
 // ==========================================================================
 // ФУНКЦИЯ ОТРИСОВКИ ВИДЖЕТА НА ГЛАВНОЙ СТРАНИЦЕ (ФИНАЛЬНЫЙ ЗАМЫКАЮЩИЙ БЛОК)
