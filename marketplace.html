@@ -6,6 +6,7 @@
     <title>Магазин - KristallCommunity</title>
     <link rel="icon" type="image/png" href="favicon.png" />
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/decorations.css">
     <style>
         .market-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; margin-top: 30px; }
         .product-card { background-color: #111827; border: 1px solid #1f2937; border-radius: 12px; padding: 20px; text-align: center; box-shadow: 0 0 15px rgba(34, 211, 238, 0.02); display: flex; flex-direction: column; justify-content: space-between; transition: 0.2s; }
@@ -82,6 +83,40 @@
     <script src="js/content.js"></script>
     <script src="js/interface.js"></script>
     <script src="js/app.js"></script>
+
+    <!-- ОКНО ПОДТВЕРЖДЕНИЯ ПОКУПКИ (STEAM & DISCORD STYLE) -->
+    <div id="confirm-modal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(3, 7, 18, 0.85); display: none; justify-content: center; align-items: center; z-index: 10000; font-family: sans-serif; backdrop-filter: blur(5px);">
+        <div style="background-color: #111827; border: 1px solid #1f2937; border-radius: 16px; width: 100%; max-width: 650px; display: flex; overflow: hidden; box-shadow: 0 0 40px rgba(34, 211, 238, 0.15); min-height: 320px;">
+            
+            <!-- ЛЕВАЯ СТОРОНА: ОГРОМНЫЙ ДЕМОНСТРАЦИОННЫЙ СТЕНД -->
+            <div style="flex: 1.1; background-color: #070a12; display: flex; align-items: center; justify-content: center; padding: 40px; border-right: 1px solid #1f2937; position: relative;">
+                <!-- Увеличили круг превью до 130px, чтобы рамку можно было рассмотреть в деталях -->
+                <div id="modal-preview-zone" style="width: 130px; height: 130px; border-radius: 50%; background: #1f2937; display: flex; align-items: center; justify-content: center; transition: 0.3s; box-sizing: border-box;">
+                    <span style="font-size: 42px; opacity: 0.2;">👾</span>
+                </div>
+            </div>
+
+            <!-- ПРАВАЯ СТОРОНА: ИНФОРМАЦИЯ И СИНХРОННЫЕ КНОПКИ -->
+            <div style="flex: 1.3; padding: 35px; display: flex; flex-direction: column; justify-content: space-between; gap: 20px; background-color: #111827;">
+                <div>
+                    <h3 id="modal-product-title" style="color: white; margin: 0 0 12px 0; font-size: 22px; font-weight: bold; font-family: sans-serif; letter-spacing: 0.5px;">Название товара</h3>
+                    
+                    <!-- ЗАЩИТА ОТ ДЛИННОГО ТЕКСТА: Ограничение высоты + умный скрытый скроллбар -->
+                    <div style="max-height: 110px; overflow-y: auto; padding-right: 5px; scrollbar-width: thin;">
+                        <p id="modal-product-desc" style="color: #9ca3af; margin: 0; font-size: 14px; line-height: 1.6; font-family: sans-serif;"></p>
+                    </div>
+                </div>
+
+                <!-- КНОПКИ С ОДИНАКОВЫМ ГЕЙМЕРСКИМ ЗАКРУГЛЕНИЕМ В 8px -->
+                <div style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
+                    <button id="modal-confirm-btn" class="auth-submit-btn" style="width: 100%; padding: 12px; font-weight: bold; font-size: 14px; background-color: #10b981; color: white; border-radius: 8px; border: none; cursor: pointer; transition: 0.2s;">Подтвердить покупку</button>
+                    
+                    <button id="modal-cancel-btn" class="action-btn" style="width: 100%; padding: 12px; font-weight: bold; font-size: 14px; justify-content: center; background-color: #1f2937; border: 1px solid #374151; color: #9ca3af; border-radius: 8px;" onmouseenter="this.style.borderColor='#ef4444'; this.style.color='#ef4444'; this.style.background='#111827';" onmouseleave="this.style.borderColor='#374151'; this.style.color='#9ca3af'; this.style.background='#1f2937';">Отмена</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
 
     <!-- Контейнер для красивых уведомлений сайта -->
     <div id="kristall-toast"></div>
